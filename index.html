@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>General & EMI Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f2f5;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      padding: 5px;
+    }
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      color: #007bff;
+      border-radius: 15px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      font-weight: 500;
+      background: transparent; /* Remove tab background */
+    }
+    .tab:hover {
+      background-color: #e0e0e0;
+    }
+    .tab.active {
+      background-color: transparent; /* Active tab background removed */
+      color: #007bff;
+      font-weight: bold;
+    }
+    .content {
+      display: none;
+    }
+    .content.active {
+      display: block;
+    }
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    .button {
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .button:hover {
+      background: #0056b3;
+    }
+    .result {
+      margin-top: 1rem;
+      padding: 10px;
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    footer {
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('general')">General Calculator</div>
+      <div class="tab" onclick="showTab('emi')">EMI Calculator</div>
+    </div>
+
+    <div id="general" class="content active">
+      <h2>General Calculator</h2>
+      <input 
+        type="text" 
+        id="expression" 
+        class="input-field" 
+        placeholder="Enter expression (e.g., 5+5*2)" 
+      />
+      <button class="button" onclick="calculateExpression()">Calculate</button>
+      <div id="generalResult" class="result">Result: 0</div>
+    </div>
+
+    <div id="emi" class="content">
+      <h2>EMI Calculator</h2>
+      <input 
+        type="number" 
+        id="loanAmount" 
+        class="input-field" 
+        placeholder="Loan Amount"
+      />
+      <input 
+        type="number" 
+        id="interestRate" 
+        class="input-field" 
+        placeholder="Annual Interest Rate (%)"
+      />
+      <input 
+        type="number" 
+        id="tenure" 
+        class="input-field" 
+        placeholder="Tenure (Years)"
+      />
+      <button class="button" onclick="calculateEMI()">Calculate EMI</button>
+      <div id="emiResult" class="result"></div>
+    </div>
+  </div>
+
+  <footer>Created by Saiful Islam Sumir</footer>
+
+  <script>
+    function showTab(tabId) {
+      const tabs = document.querySelectorAll('.tab');
+      const contents = document.querySelectorAll('.content');
+
+      tabs.forEach(tab => {
+        tab.classList.remove('active');
+      });
+      contents.forEach(content => {
+        content.classList.remove('active');
+      });
+
+      document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    function calculateExpression() {
+      const expression = document.getElementById('expression').value;
+      try {
+        const result = eval(expression); // Simple calculator logic
+        document.getElementById('generalResult').innerText = `Result: ${result}`;
+      } catch (error) {
+        alert('Invalid Expression');
+      }
+    }
+
+    function calculateEMI() {
+      const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+      const interestRate = parseFloat(document.getElementById('interestRate').value) / 12 / 100;
+      const tenure = parseFloat(document.getElementById('tenure').value) * 12;
+
+      if (isNaN(loanAmount) || isNaN(interestRate) || isNaN(tenure) || loanAmount <= 0 || interestRate <= 0 || tenure <= 0) {
+        alert('Please fill in all fields correctly with positive values.');
+        return;
+      }
+
+      const EMI = (loanAmount * interestRate * Math.pow(1 + interestRate, tenure)) / (Math.pow(1 + interestRate, tenure) - 1);
+      const totalPayable = EMI * tenure;
+      const totalInterest = totalPayable - loanAmount;
+
+      document.getElementById('emiResult').innerHTML = `
+        <p><strong>EMI:</strong> ${EMI.toFixed(2)}</p>
+        <p><strong>Total Interest Payable:</strong> ${totalInterest.toFixed(2)}</p>
+        <p><strong>Total Amount Payable:</strong> ${totalPayable.toFixed(2)}</p>
+      `;
+    }
+  </script>
+</body>
+</html>
