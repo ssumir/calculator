@@ -30,20 +30,20 @@
     }
     .tabs {
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
       margin-bottom: 20px;
       padding: 5px;
     }
     .tab {
-      padding: 10px 20px;
+      flex: 1;
+      padding: 10px 0;
+      text-align: center;
       cursor: pointer;
       font-size: 1rem;
       color: #007bff;
       border-radius: 15px;
       transition: background-color 0.3s ease, color 0.3s ease;
       font-weight: 500;
-      background: transparent;
-      text-align: center;
     }
     .tab:hover {
       background-color: #e0e0e0;
@@ -125,8 +125,8 @@
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       background-color: #e0e0e0;
       transition: background-color 0.3s ease;
@@ -139,13 +139,14 @@
 <body>
   <div class="container">
     <div class="tabs">
-      <div class="tab active" onclick="showTab('general')">General Calculator</div>
-      <div class="tab" onclick="showTab('emi')">EMI Calculator</div>
-      <div class="tab" onclick="showTab('age')">Age Calculator</div>
+      <div class="tab active" onclick="showTab('general')">General</div>
+      <div class="tab" onclick="showTab('emi')">EMI</div>
+      <div class="tab" onclick="showTab('age')">Age</div>
     </div>
 
     <div id="general" class="content active">
       <h2>General Calculator</h2>
+      <label for="expression"></label>
       <input 
         type="text" 
         id="expression" 
@@ -158,18 +159,21 @@
 
     <div id="emi" class="content">
       <h2>EMI Calculator</h2>
+      <label for="loanAmount"></label>
       <input 
         type="number" 
         id="loanAmount" 
         class="input-field" 
         placeholder="Loan Amount"
       />
+      <label for="interestRate"></label>
       <input 
         type="number" 
         id="interestRate" 
         class="input-field" 
         placeholder="Annual Interest Rate (%)"
       />
+      <label for="tenure"></label>
       <input 
         type="number" 
         id="tenure" 
@@ -182,10 +186,12 @@
 
     <div id="age" class="content">
       <h2>Age Calculator</h2>
+      <label for="birthDate">Date of Birth:</label>
       <input 
         type="date" 
         id="birthDate" 
-        class="input-field"
+        class="input-field" 
+        placeholder="Select your date of birth"
       />
       <button class="button" onclick="calculateAge()">Calculate Age</button>
       <div id="ageResult" class="result"></div>
@@ -253,7 +259,7 @@
         <p><strong>Total Amount Payable:</strong> ${totalPayable.toFixed(2)}</p>
       `;
       
-      history.push(`Loan Amount: ${loanAmount}, Interest Rate: ${interestRate * 12 * 100}%, Tenure: ${tenure / 12} years`);
+      history.push(`Loan Amount: ${loanAmount}, Interest Rate: ${(interestRate * 12 * 100).toFixed(2)}%, Tenure: ${(tenure / 12).toFixed(1)} years`);
       updateHistory();
     }
 
@@ -265,16 +271,22 @@
       }
 
       const today = new Date();
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDiff = today.getMonth() - birthDate.getMonth();
-      const dayDiff = today.getDate() - birthDate.getDate();
+      let years = today.getFullYear() - birthDate.getFullYear();
+      let months = today.getMonth() - birthDate.getMonth();
+      let days = today.getDate() - birthDate.getDate();
 
-      if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-        age--;
+      if (days < 0) {
+        months--;
+        days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
       }
 
-      document.getElementById('ageResult').innerText = `You are ${age} years old.`;
-      history.push(`Birth Date: ${birthDate.toDateString()}, Age: ${age} years`);
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      document.getElementById('ageResult').innerText = `You are ${years} years, ${months} months, and ${days} days old.`;
+      history.push(`Birth Date: ${birthDate.toDateString()}, Age: ${years} years, ${months} months, and ${days} days`);
       updateHistory();
     }
 
