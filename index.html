@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>General & EMI Calculator</title>
+  <title>General, EMI & Age Calculator</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     body {
@@ -141,6 +141,7 @@
     <div class="tabs">
       <div class="tab active" onclick="showTab('general')">General Calculator</div>
       <div class="tab" onclick="showTab('emi')">EMI Calculator</div>
+      <div class="tab" onclick="showTab('age')">Age Calculator</div>
     </div>
 
     <div id="general" class="content active">
@@ -177,6 +178,17 @@
       />
       <button class="button" onclick="calculateEMI()">Calculate EMI</button>
       <div id="emiResult" class="result"></div>
+    </div>
+
+    <div id="age" class="content">
+      <h2>Age Calculator</h2>
+      <input 
+        type="date" 
+        id="birthDate" 
+        class="input-field"
+      />
+      <button class="button" onclick="calculateAge()">Calculate Age</button>
+      <div id="ageResult" class="result"></div>
     </div>
 
     <div class="toggle-history" onclick="toggleHistory()">
@@ -245,27 +257,41 @@
       updateHistory();
     }
 
-    function updateHistory() {
-      const historyList = document.getElementById('historyList');
-      historyList.innerHTML = '';
-      history.forEach(item => {
-        const listItem = document.createElement('li');
-        listItem.textContent = item;
-        historyList.appendChild(listItem);
-      });
+    function calculateAge() {
+      const birthDate = new Date(document.getElementById('birthDate').value);
+      if (isNaN(birthDate)) {
+        alert('Please select a valid date.');
+        return;
+      }
+
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      const dayDiff = today.getDate() - birthDate.getDate();
+
+      if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+        age--;
+      }
+
+      document.getElementById('ageResult').innerText = `You are ${age} years old.`;
+      history.push(`Birth Date: ${birthDate.toDateString()}, Age: ${age} years`);
+      updateHistory();
     }
 
     function toggleHistory() {
       const historyDiv = document.getElementById('history');
-      const arrowIcon = document.querySelector('.toggle-history i');
-      
-      if (historyDiv.style.display === 'block') {
-        historyDiv.style.display = 'none';
-        arrowIcon.classList.replace('fa-arrow-up', 'fa-arrow-down');
-      } else {
-        historyDiv.style.display = 'block';
-        arrowIcon.classList.replace('fa-arrow-down', 'fa-arrow-up');
-      }
+      historyDiv.style.display = historyDiv.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function updateHistory() {
+      const historyList = document.getElementById('historyList');
+      historyList.innerHTML = '';
+
+      history.slice().reverse().forEach(item => {
+        const listItem = document.createElement('li');
+        listItem.textContent = item;
+        historyList.appendChild(listItem);
+      });
     }
   </script>
 </body>
