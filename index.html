@@ -3,237 +3,166 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>General, EMI & Age Calculator</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f0f2f5;
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    .container {
-      width: 100%;
-      max-width: 500px;
-      padding: 40px;
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      box-sizing: border-box;
-    }
-    .tabs {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      padding: 5px;
-    }
-    .tab {
-      flex: 1;
-      padding: 10px 0;
-      text-align: center;
-      cursor: pointer;
-      font-size: 1rem;
-      color: #007bff;
-      border-radius: 15px;
-      transition: background-color 0.3s ease, color 0.3s ease;
-      font-weight: 500;
-    }
-    .tab:hover {
-      background-color: #e0e0e0;
-    }
-    .tab.active {
-      background-color: #007bff;
-      color: white;
-      font-weight: bold;
-    }
-    .content {
-      display: none;
-    }
-    .content.active {
-      display: block;
-    }
-    .input-field {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 1rem;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-    .button {
-      width: 100%;
-      padding: 10px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    .button:hover {
-      background: #0056b3;
-    }
-    .result {
-      margin-top: 1rem;
-      padding: 10px;
-      background: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 1rem;
-      word-wrap: break-word;
-    }
-    footer {
-      margin-top: 20px;
-      font-size: 0.9rem;
-      color: #666;
-      text-align: center;
-    }
-    #history {
-      display: none;
-      margin-top: 20px;
-      padding: 10px;
-      background: #f9f9f9;
-      border-radius: 5px;
-      border: 1px solid #ddd;
-      max-height: 150px;
-      overflow-y: auto;
-    }
-    #history ul {
-      list-style-type: none;
-      padding: 0;
-    }
-    #history li {
-      margin-bottom: 10px;
-      padding: 5px;
-      background: #f0f0f0;
-      border-radius: 5px;
-    }
-    .toggle-history {
-      cursor: pointer;
-      font-size: 1.5rem;
-      color: #007bff;
-      margin-top: 20px;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background-color: #e0e0e0;
-      transition: background-color 0.3s ease;
-    }
-    .toggle-history:hover {
-      background-color: #b0b0b0;
-    }
-  </style>
+  <title>Mario Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
-<body>
-  <div class="container">
-    <div class="tabs">
-      <div class="tab active" onclick="showTab('general')">General</div>
-      <div class="tab" onclick="showTab('emi')">EMI</div>
-      <div class="tab" onclick="showTab('age')">Age</div>
-    </div>
+<body class="bg-gray-100 text-gray-800 flex flex-col items-center min-h-screen">
 
-    <div id="general" class="content active">
-      <h2>General Calculator</h2>
-      <label for="expression"></label>
+  <!-- Header -->
+  <header class="w-full bg-green-700 text-white py-4 text-center font-bold text-2xl shadow-lg">
+    Welcome to Mario Calculator
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="w-full bg-green-600 text-white shadow flex justify-center">
+    <button 
+      class="flex-1 text-center py-3 font-semibold hover:bg-green-700 focus:outline-none active:bg-green-800" 
+      onclick="showTab('general')"
+    >
+      General
+    </button>
+    <button 
+      class="flex-1 text-center py-3 font-semibold hover:bg-green-700 focus:outline-none active:bg-green-800" 
+      onclick="showTab('emi')"
+    >
+      EMI
+    </button>
+    <button 
+      class="flex-1 text-center py-3 font-semibold hover:bg-green-700 focus:outline-none active:bg-green-800" 
+      onclick="showTab('age')"
+    >
+      Age
+    </button>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="w-full max-w-3xl bg-white p-6 mt-0 rounded-lg shadow-lg">
+    <!-- General Calculator -->
+    <div id="general" class="tab-content block">
+      <h2 class="text-xl font-bold mb-4">General Calculator</h2>
       <input 
         type="text" 
+        inputmode="numeric" 
         id="expression" 
-        class="input-field" 
         placeholder="Enter expression (e.g., 5+5*2)" 
+        class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
       />
-      <button class="button" onclick="calculateExpression()">Calculate</button>
-      <div id="generalResult" class="result">Result: 0</div>
+      <button 
+        class="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600"
+        onclick="calculateExpression()"
+      >
+        Calculate
+      </button>
+      <div id="generalResult" class="mt-4 p-3 bg-gray-100 border rounded-lg">Result: 0</div>
+      <button 
+        class="mt-4 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600" 
+        onclick="toggleHistory('generalHistory')"
+      >
+        History
+      </button>
+      <ul id="generalHistory" class="hidden mt-4 bg-gray-200 p-4 rounded-lg max-h-40 overflow-y-auto"></ul>
     </div>
 
-    <div id="emi" class="content">
-      <h2>EMI Calculator</h2>
-      <label for="loanAmount"></label>
+    <!-- EMI Calculator -->
+    <div id="emi" class="tab-content hidden">
+      <h2 class="text-xl font-bold mb-4">EMI Calculator</h2>
       <input 
         type="number" 
         id="loanAmount" 
-        class="input-field" 
-        placeholder="Loan Amount"
+        placeholder="Loan Amount" 
+        class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
       />
-      <label for="interestRate"></label>
       <input 
         type="number" 
         id="interestRate" 
-        class="input-field" 
-        placeholder="Annual Interest Rate (%)"
+        placeholder="Annual Interest Rate (%)" 
+        class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
       />
-      <label for="tenure"></label>
       <input 
         type="number" 
         id="tenure" 
-        class="input-field" 
-        placeholder="Tenure (Years)"
+        placeholder="Tenure (Years)" 
+        class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
       />
-      <button class="button" onclick="calculateEMI()">Calculate EMI</button>
-      <div id="emiResult" class="result"></div>
+      <button 
+        class="w-full bg-red-500 text-white py-2 rounded-lg font-semibold hover:bg-red-600"
+        onclick="calculateEMI()"
+      >
+        Calculate EMI
+      </button>
+      <div id="emiResult" class="mt-4 p-3 bg-gray-100 border rounded-lg"></div>
+      <button 
+        class="mt-4 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600" 
+        onclick="toggleHistory('emiHistory')"
+      >
+        History
+      </button>
+      <ul id="emiHistory" class="hidden mt-4 bg-gray-200 p-4 rounded-lg max-h-40 overflow-y-auto"></ul>
     </div>
 
-    <div id="age" class="content">
-      <h2>Age Calculator</h2>
-      <label for="birthDate">Date of Birth:</label>
+    <!-- Age Calculator -->
+    <div id="age" class="tab-content hidden">
+      <h2 class="text-xl font-bold mb-4">Age Calculator</h2>
       <input 
         type="date" 
         id="birthDate" 
-        class="input-field" 
-        placeholder="Select your date of birth"
+        class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
       />
-      <button class="button" onclick="calculateAge()">Calculate Age</button>
-      <div id="ageResult" class="result"></div>
+      <button 
+        class="w-full bg-purple-500 text-white py-2 rounded-lg font-semibold hover:bg-purple-600"
+        onclick="calculateAge()"
+      >
+        Calculate Age
+      </button>
+      <div id="ageResult" class="mt-4 p-3 bg-gray-100 border rounded-lg"></div>
+      <button 
+        class="mt-4 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600" 
+        onclick="toggleHistory('ageHistory')">
+        History
+      </button>
+      <ul id="ageHistory" class="hidden mt-4 bg-gray-200 p-4 rounded-lg max-h-40 overflow-y-auto"></ul>
     </div>
-
-    <div class="toggle-history" onclick="toggleHistory()">
-      <i class="fas fa-arrow-down"></i>
-    </div>
-
-    <div id="history">
-      <ul id="historyList"></ul>
-    </div>
-
   </div>
 
-  <footer>Created by Saiful Islam Sumir</footer>
+  <!-- Footer -->
+  <footer class="w-full bg-green-700 text-white text-center py-4 mt-0 shadow-lg">
+  Powered by Saiful Islam Sumir. 
+  <a 
+    href="https://wa.me/+8801732484884" 
+    class="underline text-white hover:text-green-300" 
+    target="_blank" 
+    rel="noopener noreferrer"
+  >
+    <i class="fab fa-whatsapp"></i>
+  </a>
+</footer>
+
+<!-- Make sure Font Awesome is included -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
   <script>
-    const history = [];
+    let histories = {
+      general: [],
+      emi: [],
+      age: []
+    };
 
     function showTab(tabId) {
-      const tabs = document.querySelectorAll('.tab');
-      const contents = document.querySelectorAll('.content');
-
-      tabs.forEach(tab => {
-        tab.classList.remove('active');
-      });
-      contents.forEach(content => {
-        content.classList.remove('active');
-      });
-
-      document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
-      document.getElementById(tabId).classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
     }
 
     function calculateExpression() {
       const expression = document.getElementById('expression').value;
+      if (!expression) {
+        document.getElementById('generalResult').innerText = `Result: 0`;
+        return;
+      }
       try {
         const result = eval(expression);
         document.getElementById('generalResult').innerText = `Result: ${result}`;
-        history.push(`Expression: ${expression} = ${result}`);
-        updateHistory();
+        updateHistory('general', `Expression: ${expression}, Result: ${result}`);
       } catch (error) {
         alert('Invalid Expression');
       }
@@ -245,27 +174,26 @@
       const tenure = parseFloat(document.getElementById('tenure').value) * 12;
 
       if (isNaN(loanAmount) || isNaN(interestRate) || isNaN(tenure) || loanAmount <= 0 || interestRate <= 0 || tenure <= 0) {
-        alert('Please fill in all fields correctly with positive values.');
+        alert('Please fill in all fields correctly.');
         return;
       }
 
       const EMI = (loanAmount * interestRate * Math.pow(1 + interestRate, tenure)) / (Math.pow(1 + interestRate, tenure) - 1);
-      const totalPayable = EMI * tenure;
-      const totalInterest = totalPayable - loanAmount;
+      const totalInterest = (EMI * tenure - loanAmount).toFixed(2);
+      const totalPayment = (EMI * tenure).toFixed(2);
 
       document.getElementById('emiResult').innerHTML = `
         <p><strong>EMI:</strong> ${EMI.toFixed(2)}</p>
-        <p><strong>Total Interest Payable:</strong> ${totalInterest.toFixed(2)}</p>
-        <p><strong>Total Amount Payable:</strong> ${totalPayable.toFixed(2)}</p>
+        <p><strong>Total Interest:</strong> ${totalInterest}</p>
+        <p><strong>Total Payment:</strong> ${totalPayment}</p>
       `;
-      
-      history.push(`Loan Amount: ${loanAmount}, Interest Rate: ${(interestRate * 12 * 100).toFixed(2)}%, Tenure: ${(tenure / 12).toFixed(1)} years`);
-      updateHistory();
+
+      updateHistory('emi', `Loan: ${loanAmount}, EMI: ${EMI.toFixed(2)}, Total Interest: ${totalInterest}, Total Payment: ${totalPayment}`);
     }
 
     function calculateAge() {
       const birthDate = new Date(document.getElementById('birthDate').value);
-      if (isNaN(birthDate)) {
+      if (!birthDate.getTime()) {
         alert('Please select a valid date.');
         return;
       }
@@ -285,25 +213,23 @@
         months += 12;
       }
 
-      document.getElementById('ageResult').innerText = `You are ${years} years, ${months} months, and ${days} days old.`;
-      history.push(`Birth Date: ${birthDate.toDateString()}, Age: ${years} years, ${months} months, and ${days} days`);
-      updateHistory();
+      document.getElementById('ageResult').innerText = 
+        `You are ${years} years, ${months} months, and ${days} days old.`;
+
+      updateHistory('age', `Birthdate: ${birthDate.toDateString()}, Age: ${years} years, ${months} months, ${days} days`);
     }
 
-    function toggleHistory() {
-      const historyDiv = document.getElementById('history');
-      historyDiv.style.display = historyDiv.style.display === 'block' ? 'none' : 'block';
+    function updateHistory(type, record) {
+      histories[type].unshift(record);
+      if (histories[type].length > 10) histories[type].pop();
+
+      const historyList = document.getElementById(`${type}History`);
+      historyList.innerHTML = histories[type].map(item => `<li class='mb-2'>${item}</li>`).join('');
     }
 
-    function updateHistory() {
-      const historyList = document.getElementById('historyList');
-      historyList.innerHTML = '';
-
-      history.slice().reverse().forEach(item => {
-        const listItem = document.createElement('li');
-        listItem.textContent = item;
-        historyList.appendChild(listItem);
-      });
+    function toggleHistory(historyId) {
+      const historyList = document.getElementById(historyId);
+      historyList.classList.toggle('hidden');
     }
   </script>
 </body>
