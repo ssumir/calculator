@@ -10,7 +10,7 @@
 <body class="bg-gray-100 text-gray-800 flex flex-col items-center min-h-screen">
 
   <!-- Header -->
-  <header class="w-full bg-green-700 text-white py-4 text-center font-bold text-2xl shadow-lg">
+  <header class="w-full bg-green-700 text-white py-8 text-center font-bold text-2xl shadow-lg">
     Welcome to Mario Calculator
   </header>
 
@@ -37,23 +37,42 @@
   </nav>
 
   <!-- Main Container -->
-  <div class="w-full max-w-3xl bg-white p-6 mt-0 rounded-lg shadow-lg">
+  <div class="w-full bg-white p-6 mt-0 rounded-lg shadow-lg">
     <!-- General Calculator -->
     <div id="general" class="tab-content block">
       <h2 class="text-xl font-bold mb-4">General Calculator</h2>
       <input 
         type="text" 
-        inputmode="numeric" 
         id="expression" 
         placeholder="Enter expression (e.g., 5+5*2)" 
         class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
+        readonly
       />
-      <button 
-        class="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600"
-        onclick="calculateExpression()"
-      >
-        Calculate
-      </button>
+      <div class="grid grid-cols-4 gap-2">
+        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('(')">(</button>
+        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression(')')">)</button>
+        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('%')">%</button>
+        <button class="bg-red-500 text-white py-2 rounded-lg hover:bg-red-600" onclick="clearExpression()">C</button>
+        
+        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('7')">7</button>
+        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('8')">8</button>
+        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('9')">9</button>
+        <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('+')">+</button>
+        
+        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('4')">4</button>
+        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('5')">5</button>
+        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('6')">6</button>
+        <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('-')">-</button>
+        
+        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('1')">1</button>
+        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('2')">2</button>
+        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('3')">3</button>
+        <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('*')">*</button>
+        
+        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('0')">0</button>
+        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('.')">.</button>
+        <button class="col-span-2 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600" onclick="calculateExpression()">=</button>
+      </div>
       <div id="generalResult" class="mt-4 p-3 bg-gray-100 border rounded-lg">Result: 0</div>
       <button 
         class="mt-4 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600" 
@@ -127,78 +146,90 @@
 
   <!-- Footer -->
   <footer class="w-full bg-green-700 text-white text-center py-4 mt-0 shadow-lg">
-  Powered by Saiful Islam Sumir. 
-  <a 
-    href="https://wa.me/+8801732484884" 
-    class="underline text-white hover:text-red-300" 
-    target="_blank" 
-    rel="noopener noreferrer"
-  >
-    <i class='fab fa-whatsapp-square' style='font-size:18px;'></i>
-  </a>
-</footer>
-
-<!-- Make sure Font Awesome is included -->
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    Powered by Saiful Islam (Sumir). 
+    <a 
+      href="https://wa.me/+8801732484884" 
+      class="underline text-white hover:text-red-300 inline-flex items-center gap-1" 
+      target="_blank" 
+      rel="noopener noreferrer"
+    >
+      <i class="fab fa-whatsapp"></i> WhatsApp
+    </a>
+  </footer>
 
   <script>
-    let histories = {
-      general: [],
-      emi: [],
-      age: []
-    };
+    // General Calculator Functions
+    function appendToExpression(value) {
+      const expression = document.getElementById('expression');
+      expression.value += value;
+    }
 
-    function showTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-      document.getElementById(tabId).classList.remove('hidden');
+    function clearExpression() {
+      const expression = document.getElementById('expression');
+      expression.value = '';
+      document.getElementById('generalResult').innerText = 'Result: 0';
     }
 
     function calculateExpression() {
-      const expression = document.getElementById('expression').value;
-      if (!expression) {
-        document.getElementById('generalResult').innerText = `Result: 0`;
-        return;
-      }
+      const expression = document.getElementById('expression');
       try {
-        const result = eval(expression);
+        const result = eval(expression.value);
         document.getElementById('generalResult').innerText = `Result: ${result}`;
-        updateHistory('general', `Expression: ${expression}, Result: ${result}`);
-      } catch (error) {
-        alert('Invalid Expression');
+        addToHistory('generalHistory', `${expression.value} = ${result}`);
+        expression.value = '';
+      } catch {
+        document.getElementById('generalResult').innerText = 'Error in calculation';
       }
     }
 
+    function addToHistory(historyId, record) {
+      const history = document.getElementById(historyId);
+      const item = document.createElement('li');
+      item.innerText = record;
+      history.appendChild(item);
+    }
+
+    function toggleHistory(historyId) {
+      const history = document.getElementById(historyId);
+      history.classList.toggle('hidden');
+    }
+
+    // EMI Calculator Functions
     function calculateEMI() {
       const loanAmount = parseFloat(document.getElementById('loanAmount').value);
-      const interestRate = parseFloat(document.getElementById('interestRate').value) / 12 / 100;
-      const tenure = parseFloat(document.getElementById('tenure').value) * 12;
+      const annualRate = parseFloat(document.getElementById('interestRate').value);
+      const tenureYears = parseInt(document.getElementById('tenure').value);
 
-      if (isNaN(loanAmount) || isNaN(interestRate) || isNaN(tenure) || loanAmount <= 0 || interestRate <= 0 || tenure <= 0) {
-        alert('Please fill in all fields correctly.');
+      if (isNaN(loanAmount) || isNaN(annualRate) || isNaN(tenureYears) || loanAmount <= 0 || annualRate <= 0 || tenureYears <= 0) {
+        document.getElementById('emiResult').innerText = 'Please enter valid inputs';
         return;
       }
 
-      const EMI = (loanAmount * interestRate * Math.pow(1 + interestRate, tenure)) / (Math.pow(1 + interestRate, tenure) - 1);
-      const totalInterest = (EMI * tenure - loanAmount).toFixed(2);
-      const totalPayment = (EMI * tenure).toFixed(2);
+      const monthlyRate = annualRate / 12 / 100;
+      const tenureMonths = tenureYears * 12;
+      const emi = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) / (Math.pow(1 + monthlyRate, tenureMonths) - 1);
+      const totalPayment = emi * tenureMonths;
+      const totalInterest = totalPayment - loanAmount;
 
       document.getElementById('emiResult').innerHTML = `
-        <p><strong>EMI:</strong> ${EMI.toFixed(2)}</p>
-        <p><strong>Total Interest:</strong> ${totalInterest}</p>
-        <p><strong>Total Payment:</strong> ${totalPayment}</p>
+        EMI: ${emi.toFixed(2)}<br>
+        Total Payment: ${totalPayment.toFixed(2)}<br>
+        Total Interest: ${totalInterest.toFixed(2)}
       `;
 
-      updateHistory('emi', `Loan: ${loanAmount}, EMI: ${EMI.toFixed(2)}, Total Interest: ${totalInterest}, Total Payment: ${totalPayment}`);
+      addToHistory('emiHistory', `Loan: ${loanAmount}, Rate: ${annualRate}%, Tenure: ${tenureYears} years => EMI: ${emi.toFixed(2)}`);
     }
 
+    // Age Calculator Functions
     function calculateAge() {
       const birthDate = new Date(document.getElementById('birthDate').value);
-      if (!birthDate.getTime()) {
-        alert('Please select a valid date.');
+      const today = new Date();
+
+      if (isNaN(birthDate)) {
+        document.getElementById('ageResult').innerText = 'Please enter a valid date';
         return;
       }
 
-      const today = new Date();
       let years = today.getFullYear() - birthDate.getFullYear();
       let months = today.getMonth() - birthDate.getMonth();
       let days = today.getDate() - birthDate.getDate();
@@ -207,29 +238,22 @@
         months--;
         days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
       }
-
       if (months < 0) {
         years--;
         months += 12;
       }
 
-      document.getElementById('ageResult').innerText = 
-        `You are ${years} years, ${months} months, and ${days} days old.`;
-
-      updateHistory('age', `Birthdate: ${birthDate.toDateString()}, Age: ${years} years, ${months} months, ${days} days`);
+      document.getElementById('ageResult').innerText = `Age: ${years} years, ${months} months, ${days} days`;
+      addToHistory('ageHistory', `Birth Date: ${birthDate.toLocaleDateString()} => Age: ${years} years, ${months} months, ${days} days`);
     }
 
-    function updateHistory(type, record) {
-      histories[type].unshift(record);
-      if (histories[type].length > 10) histories[type].pop();
+    // Tab Switching
+    function showTab(tabId) {
+      const tabs = document.querySelectorAll('.tab-content');
+      tabs.forEach(tab => tab.classList.add('hidden'));
 
-      const historyList = document.getElementById(`${type}History`);
-      historyList.innerHTML = histories[type].map(item => `<li class='mb-2'>${item}</li>`).join('');
-    }
-
-    function toggleHistory(historyId) {
-      const historyList = document.getElementById(historyId);
-      historyList.classList.toggle('hidden');
+      const activeTab = document.getElementById(tabId);
+      activeTab.classList.remove('hidden');
     }
   </script>
 </body>
