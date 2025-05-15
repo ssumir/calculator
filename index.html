@@ -211,12 +211,30 @@
             expressionInput.focus();
         }
 
-        function moveCursor(direction) {
-            const expressionInput = document.getElementById('expression');
-            const position = expressionInput.selectionStart;
-            const newPosition = Math.max(0, Math.min(expressionInput.value.length, position + direction));
-            expressionInput.setSelectionRange(newPosition, newPosition);
-            expressionInput.focus();
+        // function moveCursor(direction) {
+        //     const expressionInput = document.getElementById('expression');
+        //     const position = expressionInput.selectionStart;
+        //     const newPosition = Math.max(0, Math.min(expressionInput.value.length, position + direction));
+        //     expressionInput.setSelectionRange(newPosition, newPosition);
+        //     expressionInput.focus();
+        // }
+        function moveCursor(offset) {
+            const inputField = document.getElementById('expression');
+
+            // Ensure the input has focus
+            inputField.focus();
+
+            // Get current cursor position
+            const cursorPos = inputField.selectionStart;
+
+            // Calculate the new position
+            let newPos = cursorPos + offset;
+
+            // Ensure the new position is within bounds
+            newPos = Math.max(0, Math.min(newPos, inputField.value.length));
+
+            // Set the new cursor position
+            inputField.setSelectionRange(newPos, newPos);
         }
 
         function factorial(n) {
