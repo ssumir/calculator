@@ -41,36 +41,44 @@
     <!-- General Calculator -->
     <div id="general" class="tab-content block">
       <h2 class="text-xl font-bold mb-4">General Calculator</h2>
-      <input 
-        type="text" 
-        id="expression" 
-        placeholder="Enter expression (e.g., 5+5*2)" 
-        class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
-      />
-      <div class="grid grid-cols-4 gap-2">
-        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('(')">(</button>
-        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression(')')">)</button>
-        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('%')">%</button>
-        <button class="bg-red-500 text-white py-2 rounded-lg hover:bg-red-600" onclick="clearExpression()">C</button>
-        
-        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('7')">7</button>
-        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('8')">8</button>
-        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('9')">9</button>
-        <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('+')">+</button>
-        
-        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('4')">4</button>
-        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('5')">5</button>
-        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('6')">6</button>
-        <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('-')">-</button>
-        
-        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('1')">1</button>
-        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('2')">2</button>
-        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('3')">3</button>
-        <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('*')">*</button>
-        
-        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('0')">0</button>
-        <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('.')">.</button>
-        <button class="col-span-2 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600" onclick="calculateExpression()">=</button>
+      <input
+            type="text"
+            id="expression"
+            placeholder="Enter expression (e.g., 2*sin(30))"
+            class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
+            style="cursor: text;"
+            onfocus="preventMobileKeyboard(event)"
+        />
+
+        <div class="grid grid-cols-5 gap-2">
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('0')">0</button>
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('(')">(</button>
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression(')')">)</button>
+            <button class="bg-red-500 text-white py-2 rounded-lg hover:bg-red-600" onclick="clearExpression()">C</button>
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="deleteLastCharacter()">Del</button>
+
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('7')">7</button>
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('8')">8</button>
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('9')">9</button>
+            <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('+')">+</button>
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="moveCursor(-1)">←</button>
+
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('4')">4</button>
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('5')">5</button>
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('6')">6</button>
+            <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('-')">-</button>
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="moveCursor(1)">→</button>
+
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('1')">1</button>
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('2')">2</button>
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('3')">3</button>
+            <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('*')">*</button>
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('%')">%</button>
+
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('.')">.</button>
+            <button class="col-span-2 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600" onclick="calculateExpression()">=</button>
+            <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('/')">/</button>
+            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" id="factorialButton" onclick="appendToExpression('!')">!</button>
       </div>
       <div id="generalResult" class="mt-4 p-3 bg-gray-100 border rounded-lg">Result: 0</div>
       <button 
@@ -158,28 +166,67 @@
 
   <script>
     // General Calculator Functions
-    function appendToExpression(value) {
-      const expression = document.getElementById('expression');
-      expression.value += value;
-    }
+    function preventMobileKeyboard(event) {
+            event.preventDefault();
+            document.getElementById('expression').blur();
+        }
 
-    function clearExpression() {
-      const expression = document.getElementById('expression');
-      expression.value = '';
-      document.getElementById('generalResult').innerText = 'Result: 0';
-    }
+        function appendToExpression(value) {
+            const expressionInput = document.getElementById('expression');
+            const start = expressionInput.selectionStart;
+            const end = expressionInput.selectionEnd;
+            const text = expressionInput.value;
 
-    function calculateExpression() {
-      const expression = document.getElementById('expression');
-      try {
-        const result = eval(expression.value);
-        document.getElementById('generalResult').innerText = `Result: ${result}`;
-        addToHistory('generalHistory', `${expression.value} = ${result}`);
-        expression.value = '';
-      } catch {
-        document.getElementById('generalResult').innerText = 'Error in calculation';
-      }
-    }
+            expressionInput.value = text.slice(0, start) + value + text.slice(end);
+            expressionInput.setSelectionRange(start + value.length, start + value.length);
+            expressionInput.focus();
+        }
+
+        function clearExpression() {
+            const expressionInput = document.getElementById('expression');
+            expressionInput.value = '';
+            document.getElementById('scientificResult').innerText = 'Result: 0';
+        }
+
+        function deleteLastCharacter() {
+            const expressionInput = document.getElementById('expression');
+            const start = expressionInput.selectionStart;
+            const end = expressionInput.selectionEnd;
+            const text = expressionInput.value;
+
+            if (start === end) {
+                expressionInput.value = text.slice(0, start - 1) + text.slice(start);
+                expressionInput.setSelectionRange(start - 1, start - 1);
+            } else {
+                expressionInput.value = text.slice(0, start) + text.slice(end);
+                expressionInput.setSelectionRange(start, start);
+            }
+            expressionInput.focus();
+        }
+
+        function moveCursor(direction) {
+            const expressionInput = document.getElementById('expression');
+            const position = expressionInput.selectionStart;
+            const newPosition = Math.max(0, Math.min(expressionInput.value.length, position + direction));
+            expressionInput.setSelectionRange(newPosition, newPosition);
+            expressionInput.focus();
+        }
+
+        function calculateExpression() {
+            const expressionInput = document.getElementById('expression');
+            let expr = expressionInput.value;
+            try {
+                expr = expr.replace(/(\d+)%/g, '(($1)/100)'); // Handle percentage
+
+                // Attempt to evaluate the expression
+                const result = eval(expr);
+                document.getElementById('scientificResult').innerText = `Result: ${result}`;
+                expressionInput.value = '';
+            } catch (error) {
+                document.getElementById('scientificResult').innerText = 'Error in calculation';
+                console.error("Calculation Error:", error);
+            }
+        }
 
     function addToHistory(historyId, record) {
       const history = document.getElementById(historyId);
