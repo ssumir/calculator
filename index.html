@@ -161,10 +161,20 @@
     <script>
         // General Calculator Functions
         function preventMobileKeyboard(event) {
-            // Do not blur the input field; instead, handle other logic if needed.
-            console.log("Input field focused");
+            event.preventDefault(); // Prevent the mobile keyboard from appearing
         }
-        
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const expressionInput = document.getElementById('expression');
+            expressionInput.addEventListener('click', (event) => {
+                // Ensure focus stays on the input field
+                expressionInput.focus();
+                
+                // Set the cursor position to the end of the text
+                const length = expressionInput.value.length;
+                expressionInput.setSelectionRange(length, length);
+            });
+        });
         function appendToExpression(value) {
             const expressionInput = document.getElementById('expression');
             const start = expressionInput.selectionStart;
