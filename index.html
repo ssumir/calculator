@@ -1,172 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mario Calculator</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mario Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 flex flex-col items-center min-h-screen">
 
-  <!-- Header -->
-  <header class="w-full bg-green-700 text-white py-8 text-center font-bold text-2xl shadow-lg">
-    Welcome to Mario Calculator
-  </header>
+    <header class="w-full bg-green-700 text-white py-8 text-center font-bold text-2xl shadow-lg">
+        Welcome to Mario Calculator
+    </header>
 
-  <!-- Navigation Bar -->
-  <nav class="w-full bg-green-600 text-white shadow flex justify-center">
-    <button 
-      class="flex-1 text-center py-3 font-semibold hover:bg-green-700 focus:outline-none active:bg-green-800" 
-      onclick="showTab('general')"
-    >
-      General
-    </button>
-    <button 
-      class="flex-1 text-center py-3 font-semibold hover:bg-green-700 focus:outline-none active:bg-green-800" 
-      onclick="showTab('emi')"
-    >
-      EMI
-    </button>
-    <button 
-      class="flex-1 text-center py-3 font-semibold hover:bg-green-700 focus:outline-none active:bg-green-800" 
-      onclick="showTab('age')"
-    >
-      Age
-    </button>
-  </nav>
+    <nav class="w-full bg-green-600 text-white shadow flex justify-center">
+        <button
+            class="flex-1 text-center py-3 font-semibold hover:bg-green-700 focus:outline-none active:bg-green-800"
+            onclick="showTab('general')"
+        >
+            General
+        </button>
+        <button
+            class="flex-1 text-center py-3 font-semibold hover:bg-green-700 focus:outline-none active:bg-green-800"
+            onclick="showTab('emi')"
+        >
+            EMI
+        </button>
+        <button
+            class="flex-1 text-center py-3 font-semibold hover:bg-green-700 focus:outline-none active:bg-green-800"
+            onclick="showTab('age')"
+        >
+            Age
+        </button>
+    </nav>
 
-  <!-- Main Container -->
-  <div class="w-full bg-white p-6 mt-0 rounded-lg shadow-lg">
-    <!-- General Calculator -->
-    <div id="general" class="tab-content block">
-      <h2 class="text-xl font-bold mb-4">General Calculator</h2>
-      <input
-            type="text"
-            id="expression"
-            placeholder="Enter expression (e.g., 2*sin(30))"
-            class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
-            style="cursor: text;"
-            onfocus="preventMobileKeyboard(event)"
-        />
+    <div class="w-full bg-white p-6 mt-0 rounded-lg shadow-lg">
+        <div id="general" class="tab-content block">
+            <h2 class="text-xl font-bold mb-4">General Calculator</h2>
+            <input
+                type="text"
+                id="expression"
+                placeholder="Enter expression"
+                class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
+                style="cursor: text;"
+                onfocus="preventMobileKeyboard(event)"
+            />
 
-        <div class="grid grid-cols-5 gap-2">
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('0')">0</button>
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('(')">(</button>
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression(')')">)</button>
-            <button class="bg-red-500 text-white py-2 rounded-lg hover:bg-red-600" onclick="clearExpression()">C</button>
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="deleteLastCharacter()">Del</button>
+            <div class="grid grid-cols-5 gap-2">
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('0')">0</button>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('(')">(</button>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression(')')">)</button>
+                <button class="bg-red-500 text-white py-2 rounded-lg hover:bg-red-600" onclick="clearExpression()">C</button>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="deleteLastCharacter()">Del</button>
 
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('7')">7</button>
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('8')">8</button>
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('9')">9</button>
-            <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('+')">+</button>
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="moveCursor(-1)">←</button>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('7')">7</button>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('8')">8</button>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('9')">9</button>
+                <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('+')">+</button>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="moveCursor(-1)">←</button>
 
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('4')">4</button>
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('5')">5</button>
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('6')">6</button>
-            <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('-')">-</button>
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="moveCursor(1)">→</button>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('4')">4</button>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('5')">5</button>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('6')">6</button>
+                <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('-')">-</button>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="moveCursor(1)">→</button>
 
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('1')">1</button>
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('2')">2</button>
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('3')">3</button>
-            <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('*')">*</button>
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('%')">%</button>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('1')">1</button>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('2')">2</button>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('3')">3</button>
+                <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('*')">*</button>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('%')">%</button>
 
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('.')">.</button>
-            <button class="col-span-2 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600" onclick="calculateExpression()">=</button>
-            <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('/')">/</button>
-            <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" id="factorialButton" onclick="appendToExpression('!')">!</button>
-      </div>
-      <div id="generalResult" class="mt-4 p-3 bg-gray-100 border rounded-lg">Result: 0</div>
-      <button 
-        class="mt-4 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600" 
-        onclick="toggleHistory('generalHistory')"
-      >
-        History
-      </button>
-      <ul id="generalHistory" class="hidden mt-4 bg-gray-200 p-4 rounded-lg max-h-40 overflow-y-auto"></ul>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" onclick="appendToExpression('.')">.</button>
+                <button class="col-span-2 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600" onclick="calculateExpression()">=</button>
+                <button class="bg-green-500 text-white py-2 rounded-lg hover:bg-green-600" onclick="appendToExpression('/')">/</button>
+                <button class="bg-gray-300 py-2 rounded-lg hover:bg-gray-400" id="factorialButton" onclick="appendToExpression('!')">!</button>
+            </div>
+            <div id="generalResult" class="mt-4 p-3 bg-gray-100 border rounded-lg">Result: 0</div>
+            <button
+                class="mt-4 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600"
+                onclick="toggleHistory('generalHistory')"
+            >
+                History
+            </button>
+            <ul id="generalHistory" class="hidden mt-4 bg-gray-200 p-4 rounded-lg max-h-40 overflow-y-auto"></ul>
+        </div>
+
+        <div id="emi" class="tab-content hidden">
+            <h2 class="text-xl font-bold mb-4">EMI Calculator</h2>
+            <input
+                type="number"
+                id="loanAmount"
+                placeholder="Loan Amount"
+                class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
+            />
+            <input
+                type="number"
+                id="interestRate"
+                placeholder="Annual Interest Rate (%)"
+                class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
+            />
+            <input
+                type="number"
+                id="tenure"
+                placeholder="Tenure (Years)"
+                class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
+            />
+            <button
+                class="w-full bg-red-500 text-white py-2 rounded-lg font-semibold hover:bg-red-600"
+                onclick="calculateEMI()"
+            >
+                Calculate EMI
+            </button>
+            <div id="emiResult" class="mt-4 p-3 bg-gray-100 border rounded-lg"></div>
+            <button
+                class="mt-4 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600"
+                onclick="toggleHistory('emiHistory')"
+            >
+                History
+            </button>
+            <ul id="emiHistory" class="hidden mt-4 bg-gray-200 p-4 rounded-lg max-h-40 overflow-y-auto"></ul>
+        </div>
+
+        <div id="age" class="tab-content hidden">
+            <h2 class="text-xl font-bold mb-4">Age Calculator</h2>
+            <input
+                type="date"
+                id="birthDate"
+                class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
+            />
+            <button
+                class="w-full bg-purple-500 text-white py-2 rounded-lg font-semibold hover:bg-purple-600"
+                onclick="calculateAge()"
+            >
+                Calculate Age
+            </button>
+            <div id="ageResult" class="mt-4 p-3 bg-gray-100 border rounded-lg"></div>
+            <button
+                class="mt-4 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600"
+                onclick="toggleHistory('ageHistory')"
+            >
+                History
+            </button>
+            <ul id="ageHistory" class="hidden mt-4 bg-gray-200 p-4 rounded-lg max-h-40 overflow-y-auto"></ul>
+        </div>
     </div>
 
-    <!-- EMI Calculator -->
-    <div id="emi" class="tab-content hidden">
-      <h2 class="text-xl font-bold mb-4">EMI Calculator</h2>
-      <input 
-        type="number" 
-        id="loanAmount" 
-        placeholder="Loan Amount" 
-        class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
-      />
-      <input 
-        type="number" 
-        id="interestRate" 
-        placeholder="Annual Interest Rate (%)" 
-        class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
-      />
-      <input 
-        type="number" 
-        id="tenure" 
-        placeholder="Tenure (Years)" 
-        class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
-      />
-      <button 
-        class="w-full bg-red-500 text-white py-2 rounded-lg font-semibold hover:bg-red-600"
-        onclick="calculateEMI()"
-      >
-        Calculate EMI
-      </button>
-      <div id="emiResult" class="mt-4 p-3 bg-gray-100 border rounded-lg"></div>
-      <button 
-        class="mt-4 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600" 
-        onclick="toggleHistory('emiHistory')"
-      >
-        History
-      </button>
-      <ul id="emiHistory" class="hidden mt-4 bg-gray-200 p-4 rounded-lg max-h-40 overflow-y-auto"></ul>
-    </div>
+    <footer class="w-full bg-green-700 text-white text-center py-4 mt-0 shadow-lg">
+        Powered by Saiful Islam (Sumir).
+        <a
+            href="https://wa.me/+8801732484884"
+            class="underline text-white hover:text-red-300 inline-flex items-center gap-1"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            <i class="fab fa-whatsapp"></i> WhatsApp
+        </a>
+    </footer>
 
-    <!-- Age Calculator -->
-    <div id="age" class="tab-content hidden">
-      <h2 class="text-xl font-bold mb-4">Age Calculator</h2>
-      <input 
-        type="date" 
-        id="birthDate" 
-        class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring focus:ring-green-300"
-      />
-      <button 
-        class="w-full bg-purple-500 text-white py-2 rounded-lg font-semibold hover:bg-purple-600"
-        onclick="calculateAge()"
-      >
-        Calculate Age
-      </button>
-      <div id="ageResult" class="mt-4 p-3 bg-gray-100 border rounded-lg"></div>
-      <button 
-        class="mt-4 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600" 
-        onclick="toggleHistory('ageHistory')">
-        History
-      </button>
-      <ul id="ageHistory" class="hidden mt-4 bg-gray-200 p-4 rounded-lg max-h-40 overflow-y-auto"></ul>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <footer class="w-full bg-green-700 text-white text-center py-4 mt-0 shadow-lg">
-    Powered by Saiful Islam (Sumir). 
-    <a 
-      href="https://wa.me/+8801732484884" 
-      class="underline text-white hover:text-red-300 inline-flex items-center gap-1" 
-      target="_blank" 
-      rel="noopener noreferrer"
-    >
-      <i class="fab fa-whatsapp"></i> WhatsApp
-    </a>
-  </footer>
-
-  <script>
-    // General Calculator Functions
-    function preventMobileKeyboard(event) {
+    <script>
+        // General Calculator Functions
+        function preventMobileKeyboard(event) {
             event.preventDefault();
             document.getElementById('expression').blur();
         }
@@ -185,7 +179,7 @@
         function clearExpression() {
             const expressionInput = document.getElementById('expression');
             expressionInput.value = '';
-            document.getElementById('scientificResult').innerText = 'Result: 0';
+            document.getElementById('generalResult').innerText = 'Result: 0';
         }
 
         function deleteLastCharacter() {
@@ -212,95 +206,105 @@
             expressionInput.focus();
         }
 
+        function factorial(n) {
+            if (n === 0 || n === 1) return 1;
+            if (n < 0 || !Number.isInteger(n)) return NaN;
+            let result = 1;
+            for (let i = 2; i <= n; i++) {
+                result *= i;
+            }
+            return result;
+        }
+
         function calculateExpression() {
             const expressionInput = document.getElementById('expression');
             let expr = expressionInput.value;
             try {
                 expr = expr.replace(/(\d+)%/g, '(($1)/100)'); // Handle percentage
+                expr = expr.replace(/(\d+)!/g, (match, p1) => `factorial(${p1})`); // Handle factorial
 
-                // Attempt to evaluate the expression
                 const result = eval(expr);
-                document.getElementById('scientificResult').innerText = `Result: ${result}`;
+                document.getElementById('generalResult').innerText = `Result: ${result}`;
+                addToHistory('generalHistory', `${expressionInput.value} = ${result}`);
                 expressionInput.value = '';
             } catch (error) {
-                document.getElementById('scientificResult').innerText = 'Error in calculation';
+                document.getElementById('generalResult').innerText = 'Error in calculation';
                 console.error("Calculation Error:", error);
             }
         }
 
-    function addToHistory(historyId, record) {
-      const history = document.getElementById(historyId);
-      const item = document.createElement('li');
-      item.innerText = record;
-      history.appendChild(item);
-    }
+        function addToHistory(historyId, record) {
+            const history = document.getElementById(historyId);
+            const item = document.createElement('li');
+            item.innerText = record;
+            history.appendChild(item);
+        }
 
-    function toggleHistory(historyId) {
-      const history = document.getElementById(historyId);
-      history.classList.toggle('hidden');
-    }
+        function toggleHistory(historyId) {
+            const history = document.getElementById(historyId);
+            history.classList.toggle('hidden');
+        }
 
-    // EMI Calculator Functions
-    function calculateEMI() {
-      const loanAmount = parseFloat(document.getElementById('loanAmount').value);
-      const annualRate = parseFloat(document.getElementById('interestRate').value);
-      const tenureYears = parseInt(document.getElementById('tenure').value);
+        // EMI Calculator Functions
+        function calculateEMI() {
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+            const annualRate = parseFloat(document.getElementById('interestRate').value);
+            const tenureYears = parseInt(document.getElementById('tenure').value);
 
-      if (isNaN(loanAmount) || isNaN(annualRate) || isNaN(tenureYears) || loanAmount <= 0 || annualRate <= 0 || tenureYears <= 0) {
-        document.getElementById('emiResult').innerText = 'Please enter valid inputs';
-        return;
-      }
+            if (isNaN(loanAmount) || isNaN(annualRate) || isNaN(tenureYears) || loanAmount <= 0 || annualRate <= 0 || tenureYears <= 0) {
+                document.getElementById('emiResult').innerText = 'Please enter valid inputs';
+                return;
+            }
 
-      const monthlyRate = annualRate / 12 / 100;
-      const tenureMonths = tenureYears * 12;
-      const emi = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) / (Math.pow(1 + monthlyRate, tenureMonths) - 1);
-      const totalPayment = emi * tenureMonths;
-      const totalInterest = totalPayment - loanAmount;
+            const monthlyRate = annualRate / 12 / 100;
+            const tenureMonths = tenureYears * 12;
+            const emi = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) / (Math.pow(1 + monthlyRate, tenureMonths) - 1);
+            const totalPayment = emi * tenureMonths;
+            const totalInterest = totalPayment - loanAmount;
 
-      document.getElementById('emiResult').innerHTML = `
-        EMI: ${emi.toFixed(2)}<br>
-        Total Payment: ${totalPayment.toFixed(2)}<br>
-        Total Interest: ${totalInterest.toFixed(2)}
-      `;
+            document.getElementById('emiResult').innerHTML = `
+                EMI: ${emi.toFixed(2)}<br>
+                Total Payment: ${totalPayment.toFixed(2)}<br>
+                Total Interest: ${totalInterest.toFixed(2)}
+            `;
 
-      addToHistory('emiHistory', `Loan: ${loanAmount}, Rate: ${annualRate}%, Tenure: ${tenureYears} years => EMI: ${emi.toFixed(2)}`);
-    }
+            addToHistory('emiHistory', `Loan: ${loanAmount}, Rate: ${annualRate}%, Tenure: ${tenureYears} years => EMI: ${emi.toFixed(2)}`);
+        }
 
-    // Age Calculator Functions
-    function calculateAge() {
-      const birthDate = new Date(document.getElementById('birthDate').value);
-      const today = new Date();
+        // Age Calculator Functions
+        function calculateAge() {
+            const birthDate = new Date(document.getElementById('birthDate').value);
+            const today = new Date();
+            if (isNaN(birthDate)) {
+                document.getElementById('ageResult').innerText = 'Please enter a valid date';
+                return;
+            }
 
-      if (isNaN(birthDate)) {
-        document.getElementById('ageResult').innerText = 'Please enter a valid date';
-        return;
-      }
+            let years = today.getFullYear() - birthDate.getFullYear();
+            let months = today.getMonth() - birthDate.getMonth();
+            let days = today.getDate() - birthDate.getDate();
 
-      let years = today.getFullYear() - birthDate.getFullYear();
-      let months = today.getMonth() - birthDate.getMonth();
-      let days = today.getDate() - birthDate.getDate();
+            if (days < 0) {
+                months--;
+                days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+            }
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
 
-      if (days < 0) {
-        months--;
-        days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
-      }
-      if (months < 0) {
-        years--;
-        months += 12;
-      }
+            document.getElementById('ageResult').innerText = `Age: ${years} years, ${months} months, ${days} days`;
+            addToHistory('ageHistory', `Birth Date: ${birthDate.toLocaleDateString()} => Age: ${years} years, ${months} months, ${days} days`);
+        }
 
-      document.getElementById('ageResult').innerText = `Age: ${years} years, ${months} months, ${days} days`;
-      addToHistory('ageHistory', `Birth Date: ${birthDate.toLocaleDateString()} => Age: ${years} years, ${months} months, ${days} days`);
-    }
+        // Tab Switching
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.add('hidden'));
 
-    // Tab Switching
-    function showTab(tabId) {
-      const tabs = document.querySelectorAll('.tab-content');
-      tabs.forEach(tab => tab.classList.add('hidden'));
-
-      const activeTab = document.getElementById(tabId);
-      activeTab.classList.remove('hidden');
-    }
-  </script>
+            const activeTab = document.getElementById(tabId);
+            activeTab.classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
