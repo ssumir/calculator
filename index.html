@@ -161,20 +161,23 @@
     <script>
         // General Calculator Functions
         function preventMobileKeyboard(event) {
-            event.preventDefault(); // Prevent the mobile keyboard from appearing
-        }
+            const inputField = event.target;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const expressionInput = document.getElementById('expression');
-            expressionInput.addEventListener('click', (event) => {
-                // Ensure focus stays on the input field
-                expressionInput.focus();
-                
-                // Set the cursor position to the end of the text
-                const length = expressionInput.value.length;
-                expressionInput.setSelectionRange(length, length);
-            });
-        });
+            // Temporarily set input to readonly to suppress the keyboard
+            inputField.readOnly = true;
+
+            // Remove readonly after a small delay to make the cursor visible
+            setTimeout(() => {
+                inputField.readOnly = false;
+
+                // Re-focus the input to ensure cursor placement
+                inputField.focus();
+
+                // Place the cursor at the end of the current text
+                const length = inputField.value.length;
+                inputField.setSelectionRange(length, length);
+            }, 100); // Small delay to manage browser behavior
+        }
         function appendToExpression(value) {
             const expressionInput = document.getElementById('expression');
             const start = expressionInput.selectionStart;
