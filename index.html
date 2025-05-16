@@ -160,38 +160,42 @@
 
     <script>
         // General Calculator Functions
-        // Prevent the mobile keyboard from showing while keeping the cursor visible
-        function preventMobileKeyboard(event) {
+       function preventMobileKeyboard(event) {
             const inputField = event.target;
 
-            // Temporarily make the field readonly to suppress the keyboard
+            // Temporarily set input to readonly to suppress the keyboard
             inputField.readOnly = true;
 
-            // Re-enable after a brief delay and refocus to show the cursor
+            // Remove readonly after a small delay to make the cursor visible
             setTimeout(() => {
                 inputField.readOnly = false;
-                inputField.focus(); // Ensure focus returns to the input field
-            }, 100);
+
+                // Re-focus the input to ensure cursor placement
+                inputField.focus();
+
+                // Place the cursor at the end of the current text
+                const length = inputField.value.length;
+                inputField.setSelectionRange(length, length);
+            }, 100); // Small delay to manage browser behavior
         }
 
-        // Move the cursor within the input field
         function moveCursor(offset) {
             const inputField = document.getElementById('expression');
 
-            // Ensure the input field is focused
+            // Ensure the input has focus
             inputField.focus();
 
             // Get current cursor position
-            const cursorPosition = inputField.selectionStart;
+            const cursorPos = inputField.selectionStart;
 
-            // Calculate new cursor position
-            let newPosition = cursorPosition + offset;
+            // Calculate the new position
+            let newPos = cursorPos + offset;
 
-            // Bound the new position within valid limits
-            newPosition = Math.max(0, Math.min(newPosition, inputField.value.length));
+            // Ensure the new position is within bounds
+            newPos = Math.max(0, Math.min(newPos, inputField.value.length));
 
-            // Move the cursor to the new position
-            inputField.setSelectionRange(newPosition, newPosition);
+            // Set the new cursor position
+            inputField.setSelectionRange(newPos, newPos);
         }
         function clearExpression() {
             const expressionInput = document.getElementById('expression');
