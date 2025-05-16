@@ -159,44 +159,37 @@
     </footer>
 
     <script>
-        // General Calculator Functions
-       function preventMobileKeyboard(event) {
+        function preventMobileKeyboard(event) {
             const inputField = event.target;
-
-            // Temporarily set input to readonly to suppress the keyboard
-            inputField.readOnly = true;
-
-            // Remove readonly after a small delay to make the cursor visible
+        
+            // Ensure cursor is placed at the end without toggling readonly
             setTimeout(() => {
-                inputField.readOnly = false;
-
-                // Re-focus the input to ensure cursor placement
                 inputField.focus();
-
-                // Place the cursor at the end of the current text
+        
                 const length = inputField.value.length;
                 inputField.setSelectionRange(length, length);
-            }, 100); // Small delay to manage browser behavior
+            }, 100); // Small delay to handle mobile browser quirks
         }
-
+        
         function moveCursor(offset) {
             const inputField = document.getElementById('expression');
-
-            // Ensure the input has focus
-            inputField.focus();
-
-            // Get current cursor position
+        
+            // Check if the input is focused; if not, focus it
+            if (document.activeElement !== inputField) {
+                inputField.focus();
+            }
+        
+            // Calculate the new cursor position
             const cursorPos = inputField.selectionStart;
-
-            // Calculate the new position
             let newPos = cursorPos + offset;
-
-            // Ensure the new position is within bounds
+        
+            // Ensure the new position is within valid bounds
             newPos = Math.max(0, Math.min(newPos, inputField.value.length));
-
-            // Set the new cursor position
+        
+            // Update the cursor position
             inputField.setSelectionRange(newPos, newPos);
         }
+
         function clearExpression() {
             const expressionInput = document.getElementById('expression');
             expressionInput.value = '';
