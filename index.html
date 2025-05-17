@@ -160,183 +160,141 @@
 
     <script>
         function preventMobileKeyboard(event) {
-            const inputField = event.target;
-        
-            // Ensure cursor is placed at the end without toggling readonly
-            setTimeout(() => {
-                inputField.focus();
-        
-                const length = inputField.value.length;
-                inputField.setSelectionRange(length, length);
-            }, 100); // Small delay to handle mobile browser quirks
-        }
-        
-        function moveCursor(offset) {
-            const inputField = document.getElementById('expression');
-        
-            // Check if the input is focused; if not, focus it
-            if (document.activeElement !== inputField) {
-                inputField.focus();
-            }
-        
-            // Calculate the new cursor position
-            const cursorPos = inputField.selectionStart;
-            let newPos = cursorPos + offset;
-        
-            // Ensure the new position is within valid bounds
-            newPos = Math.max(0, Math.min(newPos, inputField.value.length));
-        
-            // Update the cursor position
-            inputField.setSelectionRange(newPos, newPos);
-        }
-
-        function clearExpression() {
-            const expressionInput = document.getElementById('expression');
-            expressionInput.value = '';
-            document.getElementById('generalResult').innerText = 'Result: 0';
-        }
-
-        function deleteLastCharacter() {
-            const expressionInput = document.getElementById('expression');
-            const start = expressionInput.selectionStart;
-            const end = expressionInput.selectionEnd;
-            const text = expressionInput.value;
-
-            if (start === end) {
-                expressionInput.value = text.slice(0, start - 1) + text.slice(start);
-                expressionInput.setSelectionRange(start - 1, start - 1);
-            } else {
-                expressionInput.value = text.slice(0, start) + text.slice(end);
-                expressionInput.setSelectionRange(start, start);
-            }
-            expressionInput.focus();
-        }
-
-        // function moveCursor(direction) {
-        //     const expressionInput = document.getElementById('expression');
-        //     const position = expressionInput.selectionStart;
-        //     const newPosition = Math.max(0, Math.min(expressionInput.value.length, position + direction));
-        //     expressionInput.setSelectionRange(newPosition, newPosition);
-        //     expressionInput.focus();
-        // }
-        function moveCursor(offset) {
-            const inputField = document.getElementById('expression');
-
-            // Ensure the input has focus
+        const inputField = event.target;
+        setTimeout(() => {
             inputField.focus();
+            const length = inputField.value.length;
+            inputField.setSelectionRange(length, length);
+        }, 100);
+    }
 
-            // Get current cursor position
-            const cursorPos = inputField.selectionStart;
+    function moveCursor(offset) {
+        const inputField = document.getElementById('expression');
+        inputField.focus();
+        const cursorPos = inputField.selectionStart;
+        let newPos = cursorPos + offset;
+        newPos = Math.max(0, Math.min(newPos, inputField.value.length));
+        inputField.setSelectionRange(newPos, newPos);
+    }
 
-            // Calculate the new position
-            let newPos = cursorPos + offset;
+    function appendToExpression(value) {
+        const expressionInput = document.getElementById('expression');
+        const start = expressionInput.selectionStart;
+        const end = expressionInput.selectionEnd;
+        const text = expressionInput.value;
+        expressionInput.value = text.slice(0, start) + value + text.slice(end);
+        expressionInput.setSelectionRange(start + value.length, start + value.length);
+        expressionInput.focus();
+    }
 
-            // Ensure the new position is within bounds
-            newPos = Math.max(0, Math.min(newPos, inputField.value.length));
+    function clearExpression() {
+        const expressionInput = document.getElementById('expression');
+        expressionInput.value = '';
+        document.getElementById('generalResult').innerText = 'Result: 0';
+    }
 
-            // Set the new cursor position
-            inputField.setSelectionRange(newPos, newPos);
+    function deleteLastCharacter() {
+        const expressionInput = document.getElementById('expression');
+        const start = expressionInput.selectionStart;
+        const end = expressionInput.selectionEnd;
+        const text = expressionInput.value;
+        if (start === end) {
+            expressionInput.value = text.slice(0, start - 1) + text.slice(start);
+            expressionInput.setSelectionRange(start - 1, start - 1);
+        } else {
+            expressionInput.value = text.slice(0, start) + text.slice(end);
+            expressionInput.setSelectionRange(start, start);
         }
+        expressionInput.focus();
+    }
 
-        function factorial(n) {
-            if (n === 0 || n === 1) return 1;
-            if (n < 0 || !Number.isInteger(n)) return NaN;
-            let result = 1;
-            for (let i = 2; i <= n; i++) {
-                result *= i;
-            }
-            return result;
+    function factorial(n) {
+        if (n === 0 || n === 1) return 1;
+        if (n < 0 || !Number.isInteger(n)) return NaN;
+        let result = 1;
+        for (let i = 2; i <= n; i++) {
+            result *= i;
         }
+        return result;
+    }
 
-        function calculateExpression() {
-            const expressionInput = document.getElementById('expression');
-            let expr = expressionInput.value;
-            try {
-                expr = expr.replace(/(\d+)%/g, '(($1)/100)'); // Handle percentage
-                expr = expr.replace(/(\d+)!/g, (match, p1) => `factorial(${p1})`); // Handle factorial
-
-                const result = eval(expr);
-                document.getElementById('generalResult').innerText = `Result: ${result}`;
-                addToHistory('generalHistory', `${expressionInput.value} = ${result}`);
-                expressionInput.value = '';
-            } catch (error) {
-                document.getElementById('generalResult').innerText = 'Error in calculation';
-                console.error("Calculation Error:", error);
-            }
+    function calculateExpression() {
+        const expressionInput = document.getElementById('expression');
+        let expr = expressionInput.value;
+        try {
+            expr = expr.replace(/(\d+)%/g, '(($1)/100)');
+            expr = expr.replace(/(\d+)!/g, (match, p1) => `factorial(${p1})`);
+            const result = eval(expr);
+            document.getElementById('generalResult').innerText = `Result: ${result}`;
+            addToHistory('generalHistory', `${expressionInput.value} = ${result}`);
+            expressionInput.value = '';
+        } catch (error) {
+            document.getElementById('generalResult').innerText = 'Error in calculation';
+            console.error("Calculation Error:", error);
         }
+    }
 
-        function addToHistory(historyId, record) {
-            const history = document.getElementById(historyId);
-            const item = document.createElement('li');
-            item.innerText = record;
-            history.appendChild(item);
+    function addToHistory(historyId, record) {
+        const history = document.getElementById(historyId);
+        const item = document.createElement('li');
+        item.innerText = record;
+        history.appendChild(item);
+    }
+
+    function toggleHistory(historyId) {
+        const history = document.getElementById(historyId);
+        history.classList.toggle('hidden');
+    }
+
+    function calculateEMI() {
+        const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+        const annualRate = parseFloat(document.getElementById('interestRate').value);
+        const tenureYears = parseInt(document.getElementById('tenure').value);
+        if (isNaN(loanAmount) || isNaN(annualRate) || isNaN(tenureYears) || loanAmount <= 0 || annualRate <= 0 || tenureYears <= 0) {
+            document.getElementById('emiResult').innerText = 'Please enter valid inputs';
+            return;
         }
+        const monthlyRate = annualRate / 12 / 100;
+        const tenureMonths = tenureYears * 12;
+        const emi = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) / (Math.pow(1 + monthlyRate, tenureMonths) - 1);
+        const totalPayment = emi * tenureMonths;
+        const totalInterest = totalPayment - loanAmount;
+        document.getElementById('emiResult').innerHTML = `
+            EMI: ${emi.toFixed(2)}<br>
+            Total Payment: ${totalPayment.toFixed(2)}<br>
+            Total Interest: ${totalInterest.toFixed(2)}
+        `;
+        addToHistory('emiHistory', `Loan: ${loanAmount}, Rate: ${annualRate}%, Tenure: ${tenureYears} years => EMI: ${emi.toFixed(2)}`);
+    }
 
-        function toggleHistory(historyId) {
-            const history = document.getElementById(historyId);
-            history.classList.toggle('hidden');
+    function calculateAge() {
+        const birthDate = new Date(document.getElementById('birthDate').value);
+        const today = new Date();
+        if (isNaN(birthDate)) {
+            document.getElementById('ageResult').innerText = 'Please enter a valid date';
+            return;
         }
-
-        // EMI Calculator Functions
-        function calculateEMI() {
-            const loanAmount = parseFloat(document.getElementById('loanAmount').value);
-            const annualRate = parseFloat(document.getElementById('interestRate').value);
-            const tenureYears = parseInt(document.getElementById('tenure').value);
-
-            if (isNaN(loanAmount) || isNaN(annualRate) || isNaN(tenureYears) || loanAmount <= 0 || annualRate <= 0 || tenureYears <= 0) {
-                document.getElementById('emiResult').innerText = 'Please enter valid inputs';
-                return;
-            }
-
-            const monthlyRate = annualRate / 12 / 100;
-            const tenureMonths = tenureYears * 12;
-            const emi = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) / (Math.pow(1 + monthlyRate, tenureMonths) - 1);
-            const totalPayment = emi * tenureMonths;
-            const totalInterest = totalPayment - loanAmount;
-
-            document.getElementById('emiResult').innerHTML = `
-                EMI: ${emi.toFixed(2)}<br>
-                Total Payment: ${totalPayment.toFixed(2)}<br>
-                Total Interest: ${totalInterest.toFixed(2)}
-            `;
-
-            addToHistory('emiHistory', `Loan: ${loanAmount}, Rate: ${annualRate}%, Tenure: ${tenureYears} years => EMI: ${emi.toFixed(2)}`);
+        let years = today.getFullYear() - birthDate.getFullYear();
+        let months = today.getMonth() - birthDate.getMonth();
+        let days = today.getDate() - birthDate.getDate();
+        if (days < 0) {
+            months--;
+            days += new Date(today.getFullYear(), today(), 0).getDate();
         }
-
-        // Age Calculator Functions
-        function calculateAge() {
-            const birthDate = new Date(document.getElementById('birthDate').value);
-            const today = new Date();
-            if (isNaN(birthDate)) {
-                document.getElementById('ageResult').innerText = 'Please enter a valid date';
-                return;
-            }
-
-            let years = today.getFullYear() - birthDate.getFullYear();
-            let months = today.getMonth() - birthDate.getMonth();
-            let days = today.getDate() - birthDate.getDate();
-
-            if (days < 0) {
-                months--;
-                days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
-            }
-            if (months < 0) {
-                years--;
-                months += 12;
-            }
-
-            document.getElementById('ageResult').innerText = `Age: ${years} years, ${months} months, ${days} days`;
-            addToHistory('ageHistory', `Birth Date: ${birthDate.toLocaleDateString()} => Age: ${years} years, ${months} months, ${days} days`);
+        if (months < 0) {
+            years--;
+            months += 12;
         }
+        document.getElementById('ageResult').innerText = `Age: ${years} years, ${months} months, ${days} days`;
+        addToHistory('ageHistory', `Birth Date: ${birthDate.toLocaleDateString()} => Age: ${years} years, ${months} months, ${days} days`);
+    }
 
-        // Tab Switching
-        function showTab(tabId) {
-            const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach(tab => tab.classList.add('hidden'));
-
-            const activeTab = document.getElementById(tabId);
-            activeTab.classList.remove('hidden');
-        }
+    function showTab(tabId) {
+        const tabs = document.querySelectorAll('.tab-content');
+        tabs.forEach(tab => tab.classList.add('hidden'));
+        const activeTab = document.getElementById(tabId);
+        activeTab.classList.remove('hidden');
+    }
     </script>
 </body>
 </html>
