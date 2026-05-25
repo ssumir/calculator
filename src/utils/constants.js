@@ -1,0 +1,12 @@
+export const APPS = [
+  { id: 'general',  icon: 'FaCalculator',   color: '#6366f1', light: '#eef2ff', shadow: '#6366f120' },
+  { id: 'emi',      icon: 'FaUniversity',   color: '#0ea5e9', light: '#f0f9ff', shadow: '#0ea5e920' },
+  { id: 'age',      icon: 'FaBirthdayCake', color: '#10b981', light: '#ecfdf5', shadow: '#10b98120' },
+  { id: 'bmi',      icon: 'FaWeight',       color: '#f59e0b', light: '#fffbeb', shadow: '#f59e0b20' },
+  { id: 'calorie',  icon: 'FaFire',         color: '#ef4444', light: '#fff1f2', shadow: '#ef444420' },
+  { id: 'vat',      icon: 'FaReceipt',      color: '#8b5cf6', light: '#f5f3ff', shadow: '#8b5cf620' },
+  { id: 'smv',      icon: 'FaChartLine',    color: '#14b8a6', light: '#f0fdfa', shadow: '#14b8a620' },
+  { id: 'garments', icon: 'FaTshirt',       color: '#f97316', light: '#fff7ed', shadow: '#f9731620' },
+  { id: 'gsize',    icon: 'FaRuler',        color: '#ec4899', light: '#fdf2f8', shadow: '#ec489920' },
+  { id: 'unit',     icon: 'FaExchangeAlt',  color: '#3b82f6', light: '#eff6ff', shadow: '#3b82f620' },
+];

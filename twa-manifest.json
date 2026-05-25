@@ -1,0 +1,43 @@
+{
+  "packageId": "com.ssumir.calculator",
+  "host": "ssumir.github.io",
+  "name": "Mario Calculator",
+  "launcherName": "Mario Calc",
+  "display": "standalone",
+  "orientation": "portrait",
+  "themeColor": "#667eea",
+  "navigationColor": "#667eea",
+  "navigationColorDark": "#4f46e5",
+  "navigationDividerColor": "#667eea",
+  "navigationDividerColorDark": "#4f46e5",
+  "backgroundColor": "#f0f4ff",
+  "enableNotifications": false,
+  "startUrl": "/calculator/",
+  "iconUrl": "https://ssumir.github.io/calculator/icons/icon-512.png",
+  "maskableIconUrl": "https://ssumir.github.io/calculator/icons/icon-512.png",
+  "monochromeIconUrl": "https://ssumir.github.io/calculator/icons/icon-192.png",
+  "appVersion": "1",
+  "appVersionName": "1.0.0",
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://ssumir.github.io/calculator/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {
+    "locationDelegation": { "enabled": false },
+    "playBilling": { "enabled": false }
+  },
+  "alphaDependencies": { "enabled": false },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://ssumir.github.io/calculator/",
+  "minSdkVersion": 19,
+  "rotationEnabled": false,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "android"
+  },
+  "splashScreenFadeOutDuration": 300,
+  "enableSplashScreenIconPadding": true,
+  "generatedByBubblewrap": true
+}
