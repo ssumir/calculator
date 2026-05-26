@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.mariocalculator.myapp",
+    "sha256_cert_fingerprints": [
+      "DB:DC:7F:AF:8A:82:FB:0B:DB:B9:81:EF:8D:E2:99:55:FB:D7:E3:FE:31:12:9B:0A:94:F7:C0:FF:79:CB:9F:25"
+    ]
+  }
+}]
