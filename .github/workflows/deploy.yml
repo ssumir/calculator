@@ -75,7 +75,7 @@ jobs:
       - name: 🏗️ Build PWA
         run: npm run build
       - name: 🔄 Sync Capacitor
-        run: node $(which npx) cap sync android
+        run: ./node_modules/.bin/cap sync android
       - name: 🔑 Decode Keystore
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/android.keystore
