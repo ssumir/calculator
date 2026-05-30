@@ -77,7 +77,8 @@ jobs:
           mkdir -p android/app/src/main/assets/public
           cp -r dist/* android/app/src/main/assets/public/
           echo '{"appId":"com.mariocalculator.myapp","appName":"Mario Calculator","webDir":"dist"}' > android/app/src/main/assets/capacitor.config.json
-          ./node_modules/.bin/cap sync android --inline 2>/dev/null || true
+          ./node_modules/.bin/cap sync android
+          ls android/capacitor-cordova-android-plugins/ || echo "plugins folder missing"
       - name: 🔧 Fix build.gradle
         run: |
           sed -i 's/compileSdk [0-9]*/compileSdk 36/' android/app/build.gradle
