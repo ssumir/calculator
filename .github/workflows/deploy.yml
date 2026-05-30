@@ -72,8 +72,10 @@ jobs:
         run: npm ci
       - name: 🏗️ Build PWA
         run: npm run build
-      - name: 🔄 Sync Capacitor
-        run: npx cap sync android
+      - name: 🔄 Install Capacitor CLI & Sync
+        run: |
+          npm install -g @capacitor/cli@latest
+          npx cap sync android
       - name: 🔑 Decode Keystore
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/android.keystore
