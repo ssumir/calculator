@@ -1,9 +1,13 @@
 apply plugin: 'com.android.application'
 android {
     compileSdk 35
+    namespace "com.mariocalculator.myapp"
     defaultConfig {
+        applicationId "com.mariocalculator.myapp"
         minSdk 22
         targetSdk 35
+        versionCode 1
+        versionName "1.0.0"
     }
     signingConfigs {
         release {
