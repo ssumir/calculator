@@ -78,60 +78,8 @@ jobs:
         run: ./node_modules/.bin/cap sync android
       - name: 🔧 Patch build.gradle
         run: |
-          cat > android/app/build.gradle << 'EOF'
-          apply plugin: 'com.android.application'
-          android {
-              compileSdk 35
-              namespace "com.mariocalculator.myapp"
-              defaultConfig {
-                  applicationId "com.mariocalculator.myapp"
-                  minSdk 22
-                  targetSdk 35
-                  versionCode 1
-                  versionName "1.0.0"
-              }
-              signingConfigs {
-                  release {
-                      storeFile file('android.keystore')
-                      storePassword 'Saiful@1985'
-                      keyAlias 'android'
-                      keyPassword 'Saiful@1985'
-                  }
-              }
-              buildTypes {
-                  release {
-                      minifyEnabled false
-                      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-                      signingConfig signingConfigs.release
-                  }
-              }
-          }
-          repositories {
-              flatDir {
-                  dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
-              }
-          }
-          dependencies {
-              implementation fileTree(include: ['*.jar'], dir: 'libs')
-              implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
-              implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
-              implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
-              implementation project(':capacitor-android')
-              testImplementation "junit:junit:$junitVersion"
-              androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
-              androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
-              implementation project(':capacitor-cordova-android-plugins')
-          }
-          apply from: 'capacitor.build.gradle'
-          try {
-              def servicesJSON = file('google-services.json')
-              if (servicesJSON.text) {
-                  apply plugin: 'com.google.gms.google-services'
-              }
-          } catch(Exception e) {
-              logger.info("google-services.json not found, google-services plugin not applied.")
-          }
-          EOF
+          printf 'apply plugin: "com.android.application"\nandroid {\n    compileSdk 35\n    namespace "com.mariocalculator.myapp"\n    defaultConfig {\n        applicationId "com.mariocalculator.myapp"\n        minSdk 22\n        targetSdk 35\n        versionCode 1\n        versionName "1.0.0"\n    }\n    signingConfigs {\n        release {\n            storeFile file("android.keystore")\n            storePassword "Saiful@1985"\n            keyAlias "android"\n            keyPassword "Saiful@1985"\n        }\n    }\n    buildTypes {\n        release {\n            minifyEnabled false\n            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"\n            signingConfig signingConfigs.release\n        }\n    }\n}\nrepositories {\n    flatDir {\n        dirs "../capacitor-cordova-android-plugins/src/main/libs", "libs"\n    }\n}\ndependencies {\n    implementation fileTree(include: ["*.jar"], dir: "libs")\n    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"\n    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"\n    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"\n    implementation project(":capacitor-android")\n    testImplementation "junit:junit:$junitVersion"\n    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"\n    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"\n    implementation project(":capacitor-cordova-android-plugins")\n}\napply from: "capacitor.build.gradle"\n' > android/app/build.gradle
+          echo "=== build.gradle content ===" && cat android/app/build.gradle
       - name: 🔑 Decode Keystore
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/android.keystore
