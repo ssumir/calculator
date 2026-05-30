@@ -56,13 +56,6 @@ jobs:
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
-      - name: ⚙️ Setup Node.js 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - name: ✅ Verify Node version
-        run: node --version && npm --version
       - name: ☕ Setup Java 17
         uses: actions/setup-java@v4
         with:
@@ -70,16 +63,18 @@ jobs:
           distribution: temurin
       - name: 🤖 Setup Android SDK
         uses: android-actions/setup-android@v3
+      - name: ⚙️ Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
       - name: 📦 Install dependencies
         run: npm ci
-      - name: 🏗️ Build PWA
-        run: npm run build
-      - name: 🔄 Sync Capacitor
-        run: ./node_modules/.bin/cap sync android
-      - name: 🔧 Patch build.gradle
+      - name: 🏗️ Build & Copy web assets
         run: |
-          printf 'apply plugin: "com.android.application"\nandroid {\n    compileSdk 35\n    namespace "com.mariocalculator.myapp"\n    defaultConfig {\n        applicationId "com.mariocalculator.myapp"\n        minSdk 22\n        targetSdk 35\n        versionCode 1\n        versionName "1.0.0"\n    }\n    signingConfigs {\n        release {\n            storeFile file("android.keystore")\n            storePassword "Saiful@1985"\n            keyAlias "android"\n            keyPassword "Saiful@1985"\n        }\n    }\n    buildTypes {\n        release {\n            minifyEnabled false\n            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"\n            signingConfig signingConfigs.release\n        }\n    }\n}\nrepositories {\n    flatDir {\n        dirs "../capacitor-cordova-android-plugins/src/main/libs", "libs"\n    }\n}\ndependencies {\n    implementation fileTree(include: ["*.jar"], dir: "libs")\n    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"\n    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"\n    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"\n    implementation project(":capacitor-android")\n    testImplementation "junit:junit:$junitVersion"\n    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"\n    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"\n    implementation project(":capacitor-cordova-android-plugins")\n}\napply from: "capacitor.build.gradle"\n' > android/app/build.gradle
-          echo "=== build.gradle content ===" && cat android/app/build.gradle
+          npm run build
+          mkdir -p android/app/src/main/assets/public
+          cp -r dist/* android/app/src/main/assets/public/
       - name: 🔑 Decode Keystore
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/android.keystore
