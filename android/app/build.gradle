@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 android {
+    compileSdk 35
+    defaultConfig {
+        minSdk 22
+        targetSdk 35
+    }
     signingConfigs {
         release {
             storeFile file('android.keystore')
