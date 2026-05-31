@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { FaBackspace, FaFlask, FaKeyboard } from 'react-icons/fa';
-import { ActionRow, HistoryPanel, Toast } from '../ui/index.jsx';
+import { ActionRow, HistoryPanel, Toast } from '../ui/index.tsx';
 import { useLang } from '../../context/LangContext';
 import { shareWA, buildShare } from '../../utils/share';
 
