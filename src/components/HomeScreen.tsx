@@ -87,7 +87,7 @@ export default function HomeScreen({ onOpen, history, device = {} }: Props) {
               // Cyberpunk title text glow
               textShadow: '0 0 10px rgba(255,255,255,0.15)', 
             }}>
-              MARIO CALC
+              MARIO CALCULATOR
             </h1>
             <p style={{
               color: T.textSecondary,
