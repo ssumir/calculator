@@ -1,7 +1,7 @@
 {
   "name": "Mario Calculator",
   "short_name": "Mario Calc",
-  "description": "10 Smart Calculators in Bangla and English — EMI, Age, BMI, VAT, Garments, Unit Converter & more. Made by Saiful Islam (Sumir).",
+  "description": "10 Smart Calculators in Bangla and English - EMI, Age, BMI, VAT, Garments, Unit Converter & more. Made by Saiful Islam (Sumir).",
   "start_url": "/calculator/",
   "scope": "/calculator/",
   "display": "standalone",
