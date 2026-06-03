@@ -100,7 +100,7 @@ export default function SupportScreen() {
           {[
             { icon:<FaWhatsapp size={16} color="#25d366"/>, label:bn?'WhatsApp':'WhatsApp', val:'01732 484884', action:openWhatsApp },
             { icon:<FaMobileAlt size={16} color="#d4a017"/>, label:bn?'ফোন':'Phone', val:'01732 484884', action:()=>{ window.location.href='tel:+8801732484884'; } },
-            { icon:<FaGlobe size={16} color="#8e44ad"/>, label:bn?'ডেভেলপার':'Developer', val:'SIS', action:undefined },
+            { icon:<FaGlobe size={16} color="#8e44ad"/>, label:bn?'ডেভেলপার':'Developer', val:'SK-Technology', action:undefined },
             { icon:<FaShieldAlt size={16} color="#27ae60"/>, label:bn?'সংস্করণ':'Version', val:'v2.0.0', action:undefined },
           ].map((item,i) => (
             <div key={i} onClick={item.action}
@@ -168,10 +168,10 @@ export default function SupportScreen() {
         {/* Footer */}
         <div style={{ textAlign:'center', padding:'0 0 12px' }}>
           <div style={{ fontSize:11, color:'#6b6780', marginBottom:6 }}>
-            {bn?'ডেভেলপড করেছেন':'Developed by'} <span style={{ color:'#c41e3a', fontWeight:700 }}>SK-Technology</span>
+            {bn?'তৈরি করেছেন':'Made with ❤️ by'} <span style={{ color:'#c41e3a', fontWeight:700 }}>SK-Technology</span>
           </div>
           <div style={{ fontSize:10, color:'#3a3a48' }}>
-            {bn?'সর্বস্বত্ব সংরক্ষিত © ২০২৬':'All Rights Reserved © 2026'}
+            {bn?'সর্বস্বত্ব সংরক্ষিত © ২০২৫':'All Rights Reserved © 2025'}
           </div>
         </div>
       </div>
