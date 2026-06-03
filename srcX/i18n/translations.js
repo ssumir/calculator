@@ -1,7 +1,7 @@
 export const translations = {
   bn: {
     appName: 'মারিও ক্যালকুলেটর',
-    tagline: '১৩টি স্মার্ট হিসাব — একটি অ্যাপ',
+    tagline: '১০টি স্মার্ট হিসাব — একটি অ্যাপ',
     selectCalc: 'ক্যালকুলেটর বেছে নিন',
     calculate: 'হিসাব করুন',
     save: 'সংরক্ষণ',
@@ -33,9 +33,6 @@ export const translations = {
       garments: { label: 'মেজারমেন্ট',  desc: 'গার্মেন্টস মাপ' },
       gsize:    { label: 'সাইজ চার্ট',  desc: 'পোশাকের সাইজ' },
       unit:     { label: 'ইউনিট',       desc: 'একক রূপান্তর' },
-      gpattern: { label: 'প্যাটার্ন',    desc: 'পোশাকের প্যাটার্ন' },
-      bdland:   { label: 'ভূমি মাপ',    desc: 'বাংলাদেশ ভূমি একক' },
-      bdweight: { label: 'ওজন মাপ',     desc: 'বাংলাদেশ ওজন একক' },
     },
     emi: {
       loanAmount: 'ঋণের পরিমাণ (৳)',
@@ -121,7 +118,7 @@ export const translations = {
   },
   en: {
     appName: 'Mario Calculator',
-    tagline: '13 Smart Calculators in One App',
+    tagline: '10 Smart Calculators in One App',
     selectCalc: 'Select a Calculator',
     calculate: 'Calculate',
     save: 'Save',
@@ -153,9 +150,6 @@ export const translations = {
       garments: { label: 'Measurement', desc: 'Garments Measurement' },
       gsize:    { label: 'Size Chart',  desc: 'Clothing Size Chart' },
       unit:     { label: 'Unit',        desc: 'Unit Converter' },
-      gpattern: { label: 'Pattern',     desc: 'Garments Pattern' },
-      bdland:   { label: 'BD Land',     desc: 'BD Land Measurement' },
-      bdweight: { label: 'BD Weight',   desc: 'BD Weight Scale' },
     },
     emi: {
       loanAmount: 'Loan Amount (৳)',
