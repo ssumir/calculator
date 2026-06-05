@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
   FaCalculator, FaUniversity, FaBirthdayCake, FaWeight,
   FaFire, FaReceipt, FaChartLine, FaTshirt, FaRuler,
@@ -7,20 +7,68 @@ import {
 import { useLang } from '../context/LangContext.tsx';
 import { APPS } from '../utils/constants.ts';
 
-// ── Ultra-Eye-Catching Premium Dark Design Tokens ───────────────────────────
 const T = {
-  // Deep space rich background mesh
-  bgMain:       'linear-gradient(160deg, #060609 0%, #0c0c14 100%)', 
-  bgCard:       '#111118', 
-  bgCardHover:  '#161624', 
-  bgHeader:     'rgba(10, 10, 16, 0.85)',
-  textPrimary:  '#ffffff', 
-  textSecondary:'#a2a0b6', // High-contrast crisp lavender-slate
-  textMuted:    '#5a5875', 
-  border:       '#1f1f30',
-  borderCard:   '#181824',
-  font:         "'Noto Serif Bengali','Inter','Noto Sans Bengali',sans-serif",
+  bgBody:   '#07080d',
+  bgHeader: 'rgba(7,8,13,0.92)',
+  textPri:  '#eeedf5',
+  textSec:  '#8b89a8',
+  textMuted:'#3c3c52',
+  border:   'rgba(255,255,255,0.07)',
+  font:     "'Noto Serif Bengali','Outfit','Noto Sans Bengali',sans-serif",
+  fontMono: "'Space Mono',monospace",
 };
+
+const STYLES = `
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Space+Mono:wght@700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body,#root{width:100%;height:100%;overflow:hidden;background:#07080d}
+@keyframes _floatUp{from{opacity:0;transform:translateY(14px) scale(0.92)}to{opacity:1;transform:none}}
+@keyframes _bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-5px) rotate(2deg)}}
+.hsc-card{
+  position:relative;cursor:pointer;border:none;
+  background:rgba(255,255,255,0.034);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.07);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  overflow:hidden;outline:none;
+  transition:transform .16s cubic-bezier(.22,1,.36,1),background .16s,box-shadow .16s;
+}
+.hsc-card::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:radial-gradient(ellipse at 50% -5%,var(--ac)1a 0%,transparent 68%);
+  opacity:0;transition:opacity .2s;pointer-events:none;
+}
+.hsc-card:hover::before,.hsc-card:focus-visible::before{opacity:1}
+.hsc-card:hover{
+  transform:translateY(-3px) scale(1.03);
+  background:rgba(255,255,255,0.07);
+  box-shadow:inset 0 0 0 1px var(--ac)55,0 0 18px var(--ac)2a;
+}
+.hsc-card:active{transform:scale(0.93)!important;transition-duration:.06s}
+.hsc-card:focus-visible{box-shadow:0 0 0 2px var(--ac)}
+.hsc-badge{
+  position:absolute;background:var(--ac);color:#fff;
+  border-radius:5px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Mono',monospace;z-index:2;
+}
+.hsc-pod{
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:linear-gradient(135deg,var(--ac)1a 0%,var(--ac)08 100%);
+  border:1px solid var(--ac)30;
+  transition:transform .16s,box-shadow .16s;
+}
+.hsc-card:hover .hsc-pod{transform:scale(1.1);box-shadow:0 0 10px var(--ac)3a}
+.hsc-lm{font-weight:700;color:#eeedf5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;width:100%;text-align:center}
+.hsc-ls{font-weight:400;color:#6b6988;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;width:100%;text-align:center}
+.hsc-empty{background:rgba(255,255,255,0.015);border:1px dashed rgba(255,255,255,0.06);opacity:.5;cursor:default}
+.hsc-langbtn{
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
+  color:#a0a0c0;cursor:pointer;display:flex;align-items:center;gap:6px;
+  font-family:'Outfit',sans-serif;font-weight:700;
+  transition:background .2s,color .2s;flex-shrink:0;
+}
+.hsc-langbtn:hover{background:rgba(255,255,255,0.11);color:#fff}
+`;
 
 const ICON_MAP: Record<string, React.ComponentType<{ size?: number; color?: string }>> = {
   FaCalculator, FaUniversity, FaBirthdayCake, FaWeight,
@@ -28,295 +76,258 @@ const ICON_MAP: Record<string, React.ComponentType<{ size?: number; color?: stri
   FaRulerCombined, FaMapMarkedAlt, FaBalanceScale,
 };
 
-interface Props {
-  onOpen: (id: string) => void;
-  history: Record<string, string[]>;
-  device?: { w?: number };
+// 3 cols on mobile (<768px), 4 on tablet/desktop
+function numCols(w: number): number {
+  return w >= 768 ? 4 : 3;
 }
 
-export default function HomeScreen({ onOpen, history, device = {} }: Props) {
-  const { t, lang, toggle } = useLang();
-  const w = device.w || 375;
+interface CellLayout {
+  cols:     number;
+  rows:     number;
+  cell:     number;
+  gap:      number;
+  lastRowCount: number;
+  podSz:    number;
+  podR:     number;
+  iconSz:   number;
+  fMain:    number;
+  fSub:     number;
+  cardR:    number;
+  mb:       number;
+  padH:     number;
+  badgeSz:  number;
+  badgeFs:  number;
+}
 
-  const { cols, rows, placeholders } = useMemo(() => {
-    const total      = APPS.length;
-    const columns    = 4; 
-    const totalRows  = Math.ceil(total / columns);
-    const extraCells = columns * totalRows - total;
-    return { cols: columns, rows: totalRows, placeholders: extraCells };
-  }, [w]);
+function calcLayout(vw: number, vh: number, hdrH: number, tabH: number): CellLayout {
+  const cols   = numCols(vw);
+  const total  = APPS.length;
+  const rows   = Math.ceil(total / cols);
+  const gap    = 8;
+  const pad    = Math.max(8, Math.round(vw * 0.02));
+  const labelH = 26; // section label + margin
+
+  const availW = vw - pad * 2;
+  const availH = vh - hdrH - tabH - labelH - pad * 2;
+
+  const cellW  = Math.floor((availW - gap * (cols - 1)) / cols);
+  const cellH  = Math.floor((availH - gap * (rows - 1)) / rows);
+  const cell   = Math.max(44, Math.min(cellW, cellH));
+
+  const podSz  = Math.floor(cell * 0.36);
+  const podR   = Math.max(6, Math.floor(podSz * 0.28));
+  const iconSz = Math.max(13, Math.floor(podSz * 0.52));
+  const fMain  = Math.max(9, Math.min(13, Math.floor(cell * 0.115)));
+  const fSub   = Math.max(8, Math.min(11, Math.floor(cell * 0.095)));
+  const cardR  = Math.max(8, Math.floor(cell * 0.14));
+  const mb     = Math.max(4, Math.floor(cell * 0.06));
+  const padH   = Math.max(4, Math.floor(cell * 0.07));
+  const badgeSz= Math.max(13, Math.floor(cell * 0.13));
+  const badgeFs= Math.max(7, Math.floor(badgeSz * 0.6));
+  const lastRowCount = total - (rows - 1) * cols;
+
+  return { cols, rows, cell, gap, lastRowCount, podSz, podR, iconSz,
+           fMain, fSub, cardR, mb, padH, badgeSz, badgeFs };
+}
+
+interface Props {
+  onOpen:       (id: string) => void;
+  history:      Record<string, string[]>;
+  tabBarHeight?: number;
+}
+
+export default function HomeScreen({ onOpen, history, tabBarHeight = 60 }: Props) {
+  const { t, lang, toggle } = useLang();
+  const hdrRef = useRef<HTMLElement>(null);
+  const [layout, setLayout] = useState<CellLayout | null>(null);
+
+  useEffect(() => {
+    const id = 'hsc-styles';
+    if (!document.getElementById(id)) {
+      const el = document.createElement('style');
+      el.id = id; el.textContent = STYLES;
+      document.head.appendChild(el);
+    }
+  }, []);
+
+  const recompute = useCallback(() => {
+    const hdrH = hdrRef.current?.offsetHeight ?? 60;
+    setLayout(calcLayout(window.innerWidth, window.innerHeight, hdrH, tabBarHeight));
+  }, [tabBarHeight]);
+
+  useEffect(() => {
+    recompute();
+    window.addEventListener('resize', recompute);
+    return () => window.removeEventListener('resize', recompute);
+  }, [recompute]);
+
+  const pad = layout ? Math.max(8, Math.round(window.innerWidth * 0.02)) : 10;
 
   return (
     <div style={{
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      background: T.bgMain,
-      color: T.textPrimary,
-      fontFamily: T.font,
-      overflow: 'hidden',
-      userSelect: 'none',
-      WebkitUserSelect: 'none',
+      width: '100dvw', height: '100dvh',
+      display: 'flex', flexDirection: 'column',
+      background: T.bgBody, color: T.textPri,
+      fontFamily: T.font, overflow: 'hidden', position: 'relative',
     }}>
+      <div aria-hidden style={{
+        position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
+        background: `
+          radial-gradient(ellipse 70% 55% at 15% 18%,rgba(99,102,241,.07) 0%,transparent 60%),
+          radial-gradient(ellipse 55% 45% at 85% 82%,rgba(236,72,153,.05) 0%,transparent 60%)`,
+      }} />
 
-      {/* ── HEADER ── */}
-      <header style={{
-        flexShrink: 0,
-        padding: `calc(env(safe-area-inset-top,0px) + 14px) 16px 12px`,
+      {/* HEADER */}
+      <header ref={hdrRef} style={{
+        flexShrink: 0, zIndex: 10, position: 'relative',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
+        paddingTop: `max(env(safe-area-inset-top,0px),12px)`,
+        paddingBottom: '12px',
+        paddingInline: `clamp(12px,3vw,24px)`,
         background: T.bgHeader,
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
         borderBottom: `1px solid ${T.border}`,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 12,
-        zIndex: 10,
+        backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 24, animation: 'bounce 2.5s ease-in-out infinite', lineHeight: 1 }}>🍄</span>
+          <span style={{
+            fontSize: 'clamp(20px,4vw,26px)', lineHeight: 1, flexShrink: 0,
+            display: 'inline-block', animation: '_bob 3s ease-in-out infinite',
+          }}>🍄</span>
           <div>
             <h1 style={{
-              color: T.textPrimary,
-              fontSize: 12,
-              fontWeight: 800,
-              margin: 0,
-              letterSpacing: 1.5,
-              fontFamily: "'Press Start 2P', monospace",
-              lineHeight: 1.2,
-              // Cyberpunk title text glow
-              textShadow: '0 0 10px rgba(255,255,255,0.15)', 
-            }}>
-              MARIO CALCULATOR
-            </h1>
+              fontFamily: T.fontMono, margin: 0,
+              fontSize: 'clamp(10px,2.2vw,13px)', fontWeight: 700,
+              letterSpacing: 'clamp(1px,.3vw,2.5px)', color: T.textPri, lineHeight: 1.25,
+            }}>MARIO CALCULATOR</h1>
             <p style={{
-              color: T.textSecondary,
-              fontSize: 10,
-              fontWeight: 500,
-              margin: '4px 0 0',
-              fontFamily: T.font,
-            }}>
-              {t.tagline}
-            </p>
+              fontSize: 'clamp(9px,1.5vw,11px)', color: T.textSec,
+              marginTop: 3, lineHeight: 1, fontFamily: T.font,
+            }}>{t.tagline}</p>
           </div>
         </div>
-
-        <button
-          onClick={toggle}
-          style={{
-            background: 'rgba(32, 32, 48, 0.5)',
-            border: `1px solid ${T.border}`,
-            borderRadius: 12,
-            height: 34,
-            padding: '0 13px',
-            fontSize: 11,
-            fontWeight: 700,
-            color: '#c2bfe0',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            fontFamily: T.font,
-            flexShrink: 0,
-            transition: 'all 0.2s ease',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = '#28283d';
-            e.currentTarget.style.borderColor = '#444466';
-            e.currentTarget.style.color = '#ffffff';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = 'rgba(32, 32, 48, 0.5)';
-            e.currentTarget.style.borderColor = T.border;
-            e.currentTarget.style.color = '#c2bfe0';
-          }}
-        >
+        <button className="hsc-langbtn" onClick={toggle} style={{
+          borderRadius: 'clamp(7px,1.5vw,12px)',
+          height: 'clamp(28px,4.5vw,36px)',
+          padding: '0 clamp(10px,2vw,14px)',
+          fontSize: 'clamp(10px,1.6vw,12px)',
+        }}>
           <FaGlobe size={11} color="#6366f1" />
           <span>{lang === 'bn' ? 'EN' : 'বাং'}</span>
         </button>
       </header>
 
-      {/* ── EYE-CATCHING MATRIX GRID ── */}
+      {/* MAIN */}
       <main style={{
-        flex: 1,
-        minHeight: 0,
-        padding: `12px 10px calc(env(safe-area-inset-bottom,0px) + 64px) 10px`,
-        display: 'flex',
-        flexDirection: 'column',
+        flex: 1, minHeight: 0, zIndex: 1, position: 'relative',
+        display: 'flex', flexDirection: 'column',
+        padding: `10px ${pad}px 10px`,
         overflow: 'hidden',
       }}>
+        <p style={{
+          fontFamily: T.fontMono, fontSize: 9, fontWeight: 700,
+          color: T.textMuted, letterSpacing: '2px', textTransform: 'uppercase',
+          marginBottom: 8, flexShrink: 0,
+        }}>{t.selectCalc}</p>
 
-        <h2 style={{
-          fontSize: 9,
-          fontWeight: 700,
-          color: T.textMuted,
-          letterSpacing: '1px',
-          textTransform: 'uppercase',
-          margin: '0 0 10px 2px',
-          flexShrink: 0,
-          fontFamily: T.font,
-        }}>
-          {t.selectCalc}
-        </h2>
+        {layout && (() => {
+          const { cols, rows, cell, gap, lastRowCount,
+                  podSz, podR, iconSz, fMain, fSub,
+                  cardR, mb, padH, badgeSz, badgeFs } = layout;
 
-        <div style={{
-          flex: 1,
-          minHeight: 0,
-          display: 'grid',
-          gridTemplateColumns: `repeat(${cols}, 1fr)`,
-          gridTemplateRows: `repeat(${rows}, 1fr)`,
-          gap: 9,
-        }}>
-          {APPS.map((app, idx) => {
-            const Icon    = ICON_MAP[app.icon];
-            const count   = (history[app.id] || []).length;
-            const appT    = t.apps[app.id as keyof typeof t.apps];
-            
-            // Core energetic app color
-            const accent  = app.color || '#6366f1'; 
+          // Build rows array: each row is an array of app indices (or null = empty filler)
+          const rowsData: (number | null)[][] = [];
+          for (let r = 0; r < rows; r++) {
+            const isLast = r === rows - 1;
+            const count  = isLast ? lastRowCount : cols;
+            const row: (number | null)[] = [];
+            for (let c = 0; c < count; c++) row.push(r * cols + c);
+            // empty fillers for last row — stretch to fill width
+            const empties = cols - count;
+            for (let e = 0; e < empties; e++) row.push(null);
+            rowsData.push(row);
+          }
 
-            const labelPrimary   = appT?.label || app.id;
-            const labelSecondary = lang === 'bn' ? (appT?.desc || '') : '';
-
-            return (
-              <button
-                key={app.id}
-                onClick={() => onOpen(app.id)}
-                style={{
-                  '--local-accent': accent,
-                  background: T.bgCard,
-                  // Structural color top edge
-                  borderTop:    `4px solid var(--local-accent)`,
-                  borderLeft:   `1px solid ${T.borderCard}`,
-                  borderRight:  `1px solid ${T.borderCard}`,
-                  borderBottom: `1px solid ${T.borderCard}`,
-                  borderRadius: 14,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '10px 4px 8px',
-                  position: 'relative',
-                  cursor: 'pointer',
-                  transition: 'transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.15s ease, background-color 0.15s, border-color 0.15s',
-                  minWidth: 0,
-                  minHeight: 0,
-                  overflow: 'hidden',
-                  outline: 'none',
-                  // Soft dark ambient drop shadow
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
-                  animation: `slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) ${idx * 0.018}s both`,
-                } as React.CSSProperties}
-                onMouseEnter={e => {
-                  e.currentTarget.style.backgroundColor = T.bgCardHover;
-                  e.currentTarget.style.borderColor = 'var(--local-accent)';
-                  // High attractiveness factor: Colorful custom radiant neon bloom glow
-                  e.currentTarget.style.boxShadow = '0 12px 28px rgba(0,0,0,0.6), 0 0 16px var(--local-accent)40';
-                  e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)';
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.backgroundColor = T.bgCard;
-                  e.currentTarget.style.borderColor = T.borderCard;
-                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.4)';
-                  e.currentTarget.style.transform = 'translateY(0px) scale(1)';
-                }}
-                onTouchStart={e => (e.currentTarget.style.transform = 'scale(0.96) translateY(0px)')}
-                onTouchEnd={e   => (e.currentTarget.style.transform = 'translateY(0px) scale(1)')}
-              >
-                {/* Neon Activity Count Notification Badge */}
-                {count > 0 && (
-                  <div style={{
-                    position: 'absolute', top: 6, right: 6,
-                    background: 'var(--local-accent)', color: '#fff',
-                    borderRadius: 8, fontSize: 8, fontWeight: 900,
-                    padding: '1px 5px', minWidth: 15, height: 15,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    zIndex: 2,
-                    boxShadow: '0 0 10px var(--local-accent)',
-                  }}>
-                    {count}
-                  </div>
-                )}
-
-                {/* High-vibrancy Gradient-Tint Icon Pod */}
-                <div style={{
-                  width:  'clamp(34px, 38%, 44px)',
-                  height: 'clamp(34px, 38%, 44px)',
-                  borderRadius: 12,
-                  // Beautiful deep lighting effect underneath the icon
-                  background: 'linear-gradient(135deg, var(--local-accent)25 0%, var(--local-accent)05 100%)',
-                  border: '1px solid var(--local-accent)40',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  marginBottom: 9,
-                  boxShadow: 'inset 0 1px 4px rgba(255,255,255,0.1)',
+          return (
+            <div style={{
+              display: 'flex', flexDirection: 'column',
+              gap, flex: 1, minHeight: 0,
+            }}>
+              {rowsData.map((row, ri) => (
+                <div key={ri} style={{
+                  display: 'flex', gap,
+                  height: cell, flexShrink: 0,
                 }}>
-                  {Icon && <Icon size={18} color="var(--local-accent)" />}
+                  {row.map((appIdx, ci) => {
+                    // Empty filler — spans remaining width equally
+                    if (appIdx === null) {
+                      return (
+                        <div key={`e-${ci}`} className="hsc-card hsc-empty"
+                          style={{ flex: 1, height: cell, borderRadius: cardR }} />
+                      );
+                    }
+
+                    const app   = APPS[appIdx];
+                    const Icon  = ICON_MAP[app.icon];
+                    const count = (history[app.id] || []).length;
+                    const appT  = t.apps[app.id as keyof typeof t.apps];
+                    const accent= app.color || '#6366f1';
+                    const label = appT?.label || app.id;
+                    const sub   = lang === 'bn' ? (appT?.desc || '') : '';
+
+                    return (
+                      <button
+                        key={app.id}
+                        className="hsc-card"
+                        onClick={() => onOpen(app.id)}
+                        aria-label={label}
+                        style={{
+                          '--ac': accent,
+                          flex: 1,          // all cards in a row share width equally
+                          height: cell,
+                          borderRadius: cardR,
+                          padding: `${padH}px`,
+                          animationName: '_floatUp',
+                          animationDuration: '0.32s',
+                          animationTimingFunction: 'cubic-bezier(.16,1,.3,1)',
+                          animationDelay: `${appIdx * 0.02}s`,
+                          animationFillMode: 'both',
+                        } as React.CSSProperties}
+                      >
+                        {count > 0 && (
+                          <span className="hsc-badge" style={{
+                            top: 5, right: 5,
+                            width: badgeSz, height: badgeSz,
+                            fontSize: badgeFs,
+                            borderRadius: Math.floor(badgeSz * 0.4),
+                          }}>
+                            {count}
+                          </span>
+                        )}
+                        <div className="hsc-pod" style={{
+                          width: podSz, height: podSz,
+                          borderRadius: podR, marginBottom: mb,
+                        }}>
+                          {Icon && <Icon size={iconSz} color={accent} />}
+                        </div>
+                        <div style={{ width: '100%', minWidth: 0 }}>
+                          <span className="hsc-lm" style={{
+                            fontSize: fMain, fontFamily: T.font, lineHeight: 1.2,
+                          }}>{label}</span>
+                          {sub && (
+                            <span className="hsc-ls" style={{
+                              fontSize: fSub, fontFamily: T.font,
+                              lineHeight: 1.15, display: 'block', marginTop: 2,
+                            }}>{sub}</span>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
-
-                {/* Dual-Language Typography Array */}
-                <div style={{
-                  width: '100%', 
-                  textAlign: 'center',
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  gap: 3,
-                  minWidth: 0,
-                }}>
-                  {/* Primary Eng Heading */}
-                  <span style={{
-                    fontSize: 'clamp(10px, 2.5vw, 12.5px)',
-                    fontWeight: 700,
-                    color: T.textPrimary,
-                    lineHeight: 1.2,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    paddingInline: 4,
-                    display: 'block',
-                    fontFamily: T.font,
-                  }}>
-                    {labelPrimary}
-                  </span>
-
-                  {/* Secondary Bengali Translation sub-label */}
-                  {labelSecondary && (
-                    <span style={{
-                      fontSize: 'clamp(8.5px, 2vw, 10.5px)',
-                      fontWeight: 500,
-                      color: T.textSecondary,
-                      lineHeight: 1.15,
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                      paddingInline: 4,
-                      display: 'block',
-                      fontFamily: T.font,
-                      opacity: 0.85,
-                    }}>
-                      {labelSecondary}
-                    </span>
-                  )}
-                </div>
-              </button>
-            );
-          })}
-
-          {/* Aesthetic framework skeletons filling the matrix layout symmetry */}
-          {Array.from({ length: placeholders }).map((_, i) => (
-            <div
-              key={`empty-${i}`}
-              style={{
-                borderRadius: 14,
-                background: 'rgba(255,255,255,0.01)',
-                border: `1px dashed ${T.border}`,
-                opacity: 0.15,
-              }}
-            />
-          ))}
-        </div>
+              ))}
+            </div>
+          );
+        })()}
       </main>
     </div>
   );
