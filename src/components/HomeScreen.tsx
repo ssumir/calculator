@@ -21,6 +21,7 @@ const T = {
 const STYLES = `
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Space+Mono:wght@700&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body,#root{width:100%;height:100%;overflow:hidden;background:#07080d}
 @keyframes _floatUp{from{opacity:0;transform:translateY(14px) scale(0.92)}to{opacity:1;transform:none}}
 @keyframes _bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-5px) rotate(2deg)}}
 .hsc-card{
@@ -64,6 +65,7 @@ const STYLES = `
   color:#a0a0c0;cursor:pointer;display:flex;align-items:center;gap:6px;
   font-family:'Outfit',sans-serif;font-weight:700;
   transition:background .2s,color .2s;flex-shrink:0;
+  border-radius:10px;height:32px;padding:0 14px;font-size:11px;
 }
 .hsc-langbtn:hover{background:rgba(255,255,255,0.11);color:#fff}
 `;
@@ -74,66 +76,65 @@ const ICON_MAP: Record<string, React.ComponentType<{ size?: number; color?: stri
   FaRulerCombined, FaMapMarkedAlt, FaBalanceScale,
 };
 
-// Columns based on CONTAINER width (not window width)
 function numCols(w: number): number {
   if (w >= 1024) return 6;
   if (w >= 768)  return 4;
   return 3;
 }
 
-interface CellLayout {
-  cols: number; rows: number; cell: number; gap: number;
-  lastRowCount: number;
+interface Layout {
+  cols: number; rows: number;
+  cell: number; gap: number; pad: number;
   podSz: number; podR: number; iconSz: number;
   fMain: number; fSub: number; cardR: number;
-  mb: number; padH: number; badgeSz: number; badgeFs: number;
+  mb: number; padCard: number;
+  badgeSz: number; badgeFs: number;
+  lastRowCount: number;
 }
 
-function calcLayout(cw: number, ch: number, hdrH: number, tabH: number): CellLayout {
-  const cols    = numCols(cw);
-  const total   = APPS.length;
-  const rows    = Math.ceil(total / cols);
-  const gap     = 8;
-  const pad     = Math.max(8, Math.round(cw * 0.025));
-  const labelH  = 26;
+function calcLayout(cw: number, ch: number, hdrH: number): Layout {
+  const cols   = numCols(cw);
+  const total  = APPS.length;
+  const rows   = Math.ceil(total / cols);
+  const gap    = Math.max(6, Math.round(cw * 0.016));
+  const pad    = Math.max(8, Math.round(cw * 0.022));
+  const labelH = 26; // section label height + margin
 
-  const availW  = cw - pad * 2;
-  const availH  = ch - hdrH - tabH - labelH - pad * 2;
+  // Available space — tab bar is a SIBLING in App.tsx, not inside here
+  const availW = cw - pad * 2;
+  const availH = ch - hdrH - labelH - pad * 2;
 
-  const cellW   = Math.floor((availW - gap * (cols - 1)) / cols);
-  const cellH   = Math.floor((availH - gap * (rows - 1)) / rows);
-  const cell    = Math.max(44, Math.min(cellW, cellH));
+  const cellW  = Math.floor((availW - gap * (cols - 1)) / cols);
+  const cellH  = Math.floor((availH - gap * (rows - 1)) / rows);
+  const cell   = Math.max(44, Math.min(cellW, cellH)); // square: smaller wins
 
   const podSz   = Math.floor(cell * 0.36);
-  const podR    = Math.max(6, Math.floor(podSz * 0.28));
-  const iconSz  = Math.max(13, Math.floor(podSz * 0.52));
-  const fMain   = Math.max(9, Math.min(14, Math.floor(cell * 0.115)));
-  const fSub    = Math.max(8, Math.min(12, Math.floor(cell * 0.095)));
-  const cardR   = Math.max(8, Math.floor(cell * 0.14));
-  const mb      = Math.max(4, Math.floor(cell * 0.06));
-  const padH    = Math.max(4, Math.floor(cell * 0.07));
-  const badgeSz = Math.max(13, Math.floor(cell * 0.13));
-  const badgeFs = Math.max(7, Math.floor(badgeSz * 0.6));
+  const podR    = Math.max(6,  Math.floor(podSz  * 0.28));
+  const iconSz  = Math.max(13, Math.floor(podSz  * 0.52));
+  const fMain   = Math.max(9,  Math.min(14, Math.floor(cell * 0.115)));
+  const fSub    = Math.max(8,  Math.min(12, Math.floor(cell * 0.095)));
+  const cardR   = Math.max(8,  Math.floor(cell   * 0.14));
+  const mb      = Math.max(4,  Math.floor(cell   * 0.06));
+  const padCard = Math.max(4,  Math.floor(cell   * 0.07));
+  const badgeSz = Math.max(13, Math.floor(cell   * 0.13));
+  const badgeFs = Math.max(7,  Math.floor(badgeSz * 0.6));
   const lastRowCount = total - (rows - 1) * cols;
 
-  return { cols, rows, cell, gap, lastRowCount,
-           podSz, podR, iconSz, fMain, fSub, cardR, mb, padH, badgeSz, badgeFs };
+  return { cols, rows, cell, gap, pad, podSz, podR, iconSz,
+           fMain, fSub, cardR, mb, padCard, badgeSz, badgeFs, lastRowCount };
 }
 
 interface Props {
-  onOpen:        (id: string) => void;
-  history:       Record<string, string[]>;
-  tabBarHeight?: number;
+  onOpen:   (id: string) => void;
+  history:  Record<string, string[]>;
+  // tabBarHeight no longer needed — BottomNav is a sibling in App.tsx
 }
 
-export default function HomeScreen({ onOpen, history, tabBarHeight = 60 }: Props) {
+export default function HomeScreen({ onOpen, history }: Props) {
   const { t, lang, toggle } = useLang();
-
-  // Refs to measure the actual rendered container — NOT window
   const rootRef = useRef<HTMLDivElement>(null);
   const hdrRef  = useRef<HTMLElement>(null);
-
-  const [layout, setLayout] = useState<CellLayout | null>(null);
+  const [layout, setLayout] = useState<Layout | null>(null);
 
   useEffect(() => {
     const id = 'hsc-styles';
@@ -147,37 +148,37 @@ export default function HomeScreen({ onOpen, history, tabBarHeight = 60 }: Props
   const recompute = useCallback(() => {
     const root = rootRef.current;
     if (!root) return;
-    // Use the container's own bounding rect — works inside any wrapper
+    // Measure our actual container — not window — so it works in any shell
     const { width: cw, height: ch } = root.getBoundingClientRect();
     const hdrH = hdrRef.current?.offsetHeight ?? 56;
-    setLayout(calcLayout(cw, ch, hdrH, tabBarHeight));
-  }, [tabBarHeight]);
+    if (cw > 0 && ch > 0) setLayout(calcLayout(cw, ch, hdrH));
+  }, []);
 
-  // ResizeObserver watches the container itself, not the window
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
     const ro = new ResizeObserver(() => recompute());
     ro.observe(root);
-    recompute(); // initial
+    recompute();
     return () => ro.disconnect();
   }, [recompute]);
 
   const pad = layout
-    ? Math.max(8, Math.round((rootRef.current?.getBoundingClientRect().width ?? 375) * 0.025))
+    ? Math.max(8, Math.round((rootRef.current?.getBoundingClientRect().width ?? 375) * 0.022))
     : 10;
 
   return (
     <div
       ref={rootRef}
       style={{
-        width: '100%', height: '100%',   // fill whatever parent gives us
+        // Fill whatever the parent flex item gives us (content area in App.tsx)
+        width: '100%', height: '100%',
         display: 'flex', flexDirection: 'column',
         background: T.bgBody, color: T.textPri,
         fontFamily: T.font, overflow: 'hidden', position: 'relative',
       }}
     >
-      {/* Ambient background */}
+      {/* Ambient mesh */}
       <div aria-hidden style={{
         position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
         background: `
@@ -189,134 +190,138 @@ export default function HomeScreen({ onOpen, history, tabBarHeight = 60 }: Props
       <header ref={hdrRef} style={{
         flexShrink: 0, zIndex: 10, position: 'relative',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
-        paddingTop:    `max(env(safe-area-inset-top,0px),12px)`,
+        paddingTop:    'max(env(safe-area-inset-top,0px),12px)',
         paddingBottom: '12px',
-        paddingInline: `clamp(12px,3%,24px)`,
+        paddingInline: 'clamp(12px,3vw,24px)',
         background:    T.bgHeader,
         borderBottom:  `1px solid ${T.border}`,
         backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <span style={{
-            fontSize: 'clamp(18px,4%,26px)', lineHeight: 1, flexShrink: 0,
+            fontSize: 'clamp(18px,3vw,26px)', lineHeight: 1, flexShrink: 0,
             display: 'inline-block', animation: '_bob 3s ease-in-out infinite',
           }}>🍄</span>
           <div>
             <h1 style={{
               fontFamily: T.fontMono, margin: 0,
-              fontSize: 'clamp(10px,2.2%,13px)', fontWeight: 700,
-              letterSpacing: 'clamp(1px,.3%,2.5px)', color: T.textPri, lineHeight: 1.25,
-            }}>MARIO CALCULATOR</h1>
+              fontSize: 'clamp(10px,1.8vw,14px)', fontWeight: 700,
+              letterSpacing: 'clamp(1px,.3vw,2.5px)', color: T.textPri, lineHeight: 1.25,
+            }}>MARIO SMART CALCULATOR</h1>
             <p style={{
-              fontSize: 'clamp(9px,1.5%,11px)', color: T.textSec,
+              fontSize: 'clamp(9px,1.2vw,11px)', color: T.textSec,
               marginTop: 3, lineHeight: 1, fontFamily: T.font,
             }}>{t.tagline}</p>
           </div>
         </div>
-        <button className="hsc-langbtn" onClick={toggle} style={{
-          borderRadius: 10, height: 32,
-          padding: '0 14px', fontSize: 11,
-        }}>
+        <button className="hsc-langbtn" onClick={toggle}>
           <FaGlobe size={11} color="#6366f1" />
           <span>{lang === 'bn' ? 'EN' : 'বাং'}</span>
         </button>
       </header>
 
-      {/* MAIN */}
-      <main style={{
-        flex: 1, minHeight: 0, zIndex: 1, position: 'relative',
-        display: 'flex', flexDirection: 'column',
-        padding: `10px ${pad}px`,
-        overflow: 'hidden',
-      }}>
-        <p style={{
-          fontFamily: T.fontMono, fontSize: 9, fontWeight: 700,
-          color: T.textMuted, letterSpacing: '2px', textTransform: 'uppercase',
-          marginBottom: 8, flexShrink: 0,
-        }}>{t.selectCalc}</p>
+      {/* MAIN GRID */}
+      {layout && (() => {
+        const {
+          cols, rows, cell, gap, pad: lpad, lastRowCount,
+          podSz, podR, iconSz, fMain, fSub,
+          cardR, mb, padCard, badgeSz, badgeFs,
+        } = layout;
 
-        {layout && (() => {
-          const { cols, rows, cell, gap, lastRowCount,
-                  podSz, podR, iconSz, fMain, fSub,
-                  cardR, mb, padH, badgeSz, badgeFs } = layout;
+        return (
+          <main style={{
+            flex: 1, minHeight: 0, zIndex: 1, position: 'relative',
+            display: 'flex', flexDirection: 'column',
+            padding: `10px ${lpad}px`,
+            overflow: 'hidden',
+          }}>
+            {/* Section label */}
+            <p style={{
+              fontFamily: T.fontMono, fontSize: 9, fontWeight: 700,
+              color: T.textMuted, letterSpacing: '2px', textTransform: 'uppercase',
+              marginBottom: 8, flexShrink: 0,
+            }}>{t.selectCalc}</p>
 
-          // Build row arrays — last row has only real apps, no fillers.
-          // flex:1 on cards fills width: 1 alone = full, 2 = half each, etc.
-          const rowsData: number[][] = Array.from({ length: rows }, (_, r) => {
-            const start = r * cols;
-            const end   = r === rows - 1 ? APPS.length : start + cols;
-            return Array.from({ length: end - start }, (_, i) => start + i);
-          });
-
-          return (
+            {/* Grid column — fills remaining height evenly across rows */}
             <div style={{
+              flex: 1, minHeight: 0,
               display: 'flex', flexDirection: 'column',
-              gap, flex: 1, minHeight: 0,
+              gap,
             }}>
-              {rowsData.map((row, ri) => (
-                <div key={ri} style={{ display: 'flex', gap, height: cell, flexShrink: 0 }}>
-                  {row.map((appIdx) => {
-                    const app    = APPS[appIdx];
-                    const Icon   = ICON_MAP[app.icon];
-                    const count  = (history[app.id] || []).length;
-                    const appT   = t.apps[app.id as keyof typeof t.apps];
-                    const accent = app.color || '#6366f1';
-                    const label  = appT?.label || app.id;
-                    const sub    = lang === 'bn' ? (appT?.desc || '') : '';
+              {Array.from({ length: rows }, (_, r) => {
+                const isLast    = r === rows - 1;
+                const appsInRow = isLast ? lastRowCount : cols;
+                const startIdx  = r * cols;
 
-                    return (
-                      <button
-                        key={app.id}
-                        className="hsc-card"
-                        onClick={() => onOpen(app.id)}
-                        aria-label={label}
-                        style={{
-                          '--ac': accent,
-                          flex: 1, minWidth: 0,
-                          height: cell,
-                          borderRadius: cardR,
-                          padding: padH,
-                          animationName: '_floatUp',
-                          animationDuration: '0.32s',
-                          animationTimingFunction: 'cubic-bezier(.16,1,.3,1)',
-                          animationDelay: `${appIdx * 0.02}s`,
-                          animationFillMode: 'both',
-                        } as React.CSSProperties}
-                      >
-                        {count > 0 && (
-                          <span className="hsc-badge" style={{
-                            top: 5, right: 5,
-                            width: badgeSz, height: badgeSz,
-                            fontSize: badgeFs,
-                            borderRadius: Math.floor(badgeSz * 0.4),
-                          }}>{count}</span>
-                        )}
-                        <div className="hsc-pod" style={{
-                          width: podSz, height: podSz,
-                          borderRadius: podR, marginBottom: mb,
-                        }}>
-                          {Icon && <Icon size={iconSz} color={accent} />}
-                        </div>
-                        <div style={{ width: '100%', minWidth: 0 }}>
-                          <span className="hsc-lm" style={{ fontSize: fMain, fontFamily: T.font, lineHeight: 1.2 }}>
-                            {label}
-                          </span>
-                          {sub && (
-                            <span className="hsc-ls" style={{
-                              fontSize: fSub, fontFamily: T.font,
-                              lineHeight: 1.15, display: 'block', marginTop: 2,
-                            }}>{sub}</span>
+                return (
+                  <div key={r} style={{
+                    display: 'flex', gap,
+                    height: cell, flexShrink: 0,
+                  }}>
+                    {Array.from({ length: appsInRow }, (_, ci) => {
+                      const appIdx = startIdx + ci;
+                      const app    = APPS[appIdx];
+                      const Icon   = ICON_MAP[app.icon];
+                      const count  = (history[app.id] || []).length;
+                      const appT   = t.apps[app.id as keyof typeof t.apps];
+                      const accent = app.color || '#6366f1';
+                      const label  = appT?.label || app.id;
+                      const sub    = lang === 'bn' ? (appT?.desc || '') : '';
+
+                      return (
+                        <button
+                          key={app.id}
+                          className="hsc-card"
+                          onClick={() => onOpen(app.id)}
+                          aria-label={label}
+                          style={{
+                            '--ac': accent,
+                            flex: 1, minWidth: 0,
+                            height: cell,
+                            borderRadius: cardR,
+                            padding: padCard,
+                            animationName: '_floatUp',
+                            animationDuration: '0.32s',
+                            animationTimingFunction: 'cubic-bezier(.16,1,.3,1)',
+                            animationDelay: `${appIdx * 0.02}s`,
+                            animationFillMode: 'both',
+                          } as React.CSSProperties}
+                        >
+                          {count > 0 && (
+                            <span className="hsc-badge" style={{
+                              top: 5, right: 5,
+                              width: badgeSz, height: badgeSz,
+                              fontSize: badgeFs,
+                              borderRadius: Math.floor(badgeSz * 0.4),
+                            }}>{count}</span>
                           )}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              ))}
+                          <div className="hsc-pod" style={{
+                            width: podSz, height: podSz,
+                            borderRadius: podR, marginBottom: mb,
+                          }}>
+                            {Icon && <Icon size={iconSz} color={accent} />}
+                          </div>
+                          <div style={{ width: '100%', minWidth: 0 }}>
+                            <span className="hsc-lm" style={{
+                              fontSize: fMain, fontFamily: T.font, lineHeight: 1.2,
+                            }}>{label}</span>
+                            {sub && (
+                              <span className="hsc-ls" style={{
+                                fontSize: fSub, fontFamily: T.font,
+                                lineHeight: 1.15, display: 'block', marginTop: 2,
+                              }}>{sub}</span>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                );
+              })}
             </div>
-          );
-        })()}
-      </main>
+          </main>
+        );
+      })()}
     </div>
   );
 }

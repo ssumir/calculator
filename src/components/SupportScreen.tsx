@@ -33,8 +33,8 @@ export default function SupportScreen() {
 
   const openWhatsApp = () => {
     const msg = encodeURIComponent(bn
-      ? 'আসসালামু আলাইকুম, Mario Calculator থেকে সাপোর্টের জন্য যোগাযোগ করছি।'
-      : 'Hello, I am contacting for support regarding Mario Calculator.');
+      ? 'আসসালামু আলাইকুম, Mario Smart Calculator থেকে সাপোর্টের জন্য যোগাযোগ করছি।'
+      : 'Hello, I am contacting for support regarding Mario Smart Calculator.');
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (isMobile) window.location.href = `whatsapp://send?phone=${WHATSAPP}&text=${msg}`;
     else window.open(`https://wa.me/${WHATSAPP}?text=${msg}`, '_blank');
@@ -57,7 +57,7 @@ export default function SupportScreen() {
 
         <div style={{ fontSize:36, marginBottom:10 }}>🍄</div>
         <div style={{ fontFamily:"'Press Start 2P', monospace", color:'#e8e8e8', fontSize:11, letterSpacing:2, marginBottom:4 }}>
-          MARIO CALCULATOR
+          MARIO SMART CALCULATOR
         </div>
         <div style={{ fontSize:13, color:'#a8a4b8', fontWeight:500, marginBottom:16, lineHeight:1.5 }}>
           {bn ? '১৩টি স্মার্ট ক্যালকুলেটর — একটি অ্যাপে' : '13 Smart Calculators in One App'}
@@ -100,7 +100,7 @@ export default function SupportScreen() {
           {[
             { icon:<FaWhatsapp size={16} color="#25d366"/>, label:bn?'WhatsApp':'WhatsApp', val:'01732 484884', action:openWhatsApp },
             { icon:<FaMobileAlt size={16} color="#d4a017"/>, label:bn?'ফোন':'Phone', val:'01732 484884', action:()=>{ window.location.href='tel:+8801732484884'; } },
-            { icon:<FaGlobe size={16} color="#8e44ad"/>, label:bn?'ডেভেলপার':'Developer', val:'SK-Technology', action:undefined },
+            { icon:<FaGlobe size={16} color="#8e44ad"/>, label:bn?'ডেভেলপার':'Developer', val:'Saiful Islam', action:undefined },
             { icon:<FaShieldAlt size={16} color="#27ae60"/>, label:bn?'সংস্করণ':'Version', val:'v2.0.0', action:undefined },
           ].map((item,i) => (
             <div key={i} onClick={item.action}
@@ -168,7 +168,7 @@ export default function SupportScreen() {
         {/* Footer */}
         <div style={{ textAlign:'center', padding:'0 0 12px' }}>
           <div style={{ fontSize:11, color:'#6b6780', marginBottom:6 }}>
-            {bn?'তৈরি করেছেন':'Made with ❤️ by'} <span style={{ color:'#c41e3a', fontWeight:700 }}>SK-Technology</span>
+            <span style={{ color:'#c41e3a', fontWeight:700 }}>SK-Technology</span>
           </div>
           <div style={{ fontSize:10, color:'#3a3a48' }}>
             {bn?'সর্বস্বত্ব সংরক্ষিত © ২০২৫':'All Rights Reserved © 2025'}
