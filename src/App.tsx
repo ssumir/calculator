@@ -78,16 +78,46 @@ const APP_INFO: Record<string, { en: string; bn: string }> = {
                bn: 'BD বা আন্তর্জাতিক মোড বেছে নিন।\nVAT যোগ বা বিয়োগ মোড বেছে নিন।\nপরিমাণ ও হার দিয়ে হিসাব চাপুন।' },
   smv:      { en: 'Enter number of shares, buy price, current price and brokerage %.\nPress Calculate for profit/loss.',
                bn: 'শেয়ার সংখ্যা, ক্রয় মূল্য, বর্তমান মূল্য ও ব্রোকারেজ দিন।\nহিসাব চাপুন।' },
-  garments: { en: 'Enter chest measurement in inches (required).\nWaist, hip, shoulder are optional.\nPress Calculate for recommended size.',
-               bn: 'বুকের মাপ ইঞ্চিতে দিন (আবশ্যক)।\nকোমর, হিপ, কাঁধ ঐচ্ছিক।\nহিসাব চাপুন।' },
+  garments: { en: `Measuring Guide:
+- Stand straight
+- Keep tape snug against body
+- Chest: at fullest part of chest
+- Waist: at narrowest part of abdomen
+- Hip: at widest part
+- All measurements in inches
+- Press Calculate for recommended size.`,
+               bn: `মাপ নেওয়ার নিয়ম:
+- সোজা হয়ে দাঁড়ান
+- ফিতা শরীরের সাথে আটসাট রাখুন
+- বুকের মাপ: বুকের সবচেয়ে চওড়া অংশে
+- কোমরের মাপ: পেটের সবচেয়ে সরু অংশে
+- নিতম্বের মাপ: সবচেয়ে চওড়া অংশে
+- সব মাপ ইঞ্চিতে
+- হিসাব চাপুন।` },
   gpattern: { en: 'Select garment type, enter all measurements in inches.\nPress Generate Pattern.\nA,B,C = measurement points. Add 0.5" seam allowance.',
                bn: 'পোশাকের ধরন বেছে মাপ ইঞ্চিতে দিন।\nপ্যাটার্ন তৈরি চাপুন।\nA,B,C = মেজারমেন্ট পয়েন্ট। ০.৫" সেলাই ভাতা যোগ করুন।' },
   gsize:    { en: 'Select gender and category (shirt / pants / shoes).\nFind your size across BD, US, UK, EU and Asia standards.',
                bn: 'লিঙ্গ ও বিভাগ (শার্ট / প্যান্ট / জুতা) বেছে নিন।\nBD, US, UK, EU ও Asia সাইজ দেখুন।' },
   unit:     { en: 'Select a category (length, weight, temperature, area, volume, speed).\nEnter value and choose units, then Calculate.',
                bn: 'বিভাগ বেছে নিন (দৈর্ঘ্য, ওজন, তাপমাত্রা, ক্ষেত্রফল, আয়তন, গতি)।\nমান ও একক দিয়ে হিসাব চাপুন।' },
-  bdland:   { en: 'Enter land area value, select the source unit (Katha, Bigha, Decimal etc.).\nPress Convert to see all units.',
-               bn: 'জমির পরিমাণ দিন, উৎস একক বেছে নিন (কাঠা, বিঘা, শতাংশ ইত্যাদি)।\nরূপান্তর চাপুন।' },
+  bdland:   { en: `BD Land Standards:
+1 Bigha = 3 Katha
+1 Katha = 20 Chattak
+1 Chattak = 45 sq ft
+1 Katha = 720 sq ft
+1 Bigha = 14,400 sq ft
+1 Decimal = 435.6 sq ft
+
+Enter value, select unit, press Convert.`,
+               bn: `বাংলাদেশ ভূমি মানদণ্ড:
+১ বিঘা = ৩ কাঠা
+১ কাঠা = ২০ ছটাক
+১ ছটাক = ৪৫ বর্গফুট
+১ কাঠা = ৭২০ বর্গফুট
+১ বিঘা = ১৪,৪০০ বর্গফুট
+১ শতাংশ = ৪৩৫.৬ বর্গফুট
+
+পরিমাণ দিন, একক বেছে নিন, রূপান্তর চাপুন।` },
   bdweight: { en: 'Enter weight/quantity, select the unit (Maund, Seer, kg etc.).\nEnter price per kg, then Calculate total price.',
                bn: 'ওজন দিন, একক বেছে নিন (মণ, সের, কেজি ইত্যাদি)।\nপ্রতি কেজি দাম দিয়ে হিসাব চাপুন।' },
   support:  { en: '', bn: '' },
