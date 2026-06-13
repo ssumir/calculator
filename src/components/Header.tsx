@@ -101,8 +101,27 @@ export default function Header({ onBack, title, accent, icon: Icon, info }: Prop
 
           {tooltip && (
             <div style={{
-              position: 'absolute', top: 42, right: 0,
-              width: 'min(290px, 80vw)',
+              position: 'fixed',
+              top: (() => {
+                const el = tipRef.current;
+                if (!el) return 80;
+                const r = el.getBoundingClientRect();
+                return r.bottom + 8;
+              })(),
+              left: (() => {
+                const el = tipRef.current;
+                if (!el) return 16;
+                const r = el.getBoundingClientRect();
+                const tooltipW = Math.min(290, window.innerWidth * 0.8);
+                // Prefer aligning right edge to button right edge
+                let left = r.right - tooltipW;
+                // Clamp so it never goes off-screen left
+                left = Math.max(12, left);
+                // Clamp so it never goes off-screen right
+                left = Math.min(left, window.innerWidth - tooltipW - 12);
+                return left;
+              })(),
+              width: 'min(290px, calc(100vw - 24px))',
               background: 'var(--surface)',
               border: `2px solid ${accent}40`,
               borderRadius: 14,
@@ -134,7 +153,7 @@ export default function Header({ onBack, title, accent, icon: Icon, info }: Prop
         </div>
       )}
 
-      {/* Theme toggle — day/night */}
+      {/* Theme toggle â€” day/night */}
       <button
         onClick={toggleTheme}
         title={isDark ? 'Switch to Day mode' : 'Switch to Night mode'}
@@ -163,7 +182,7 @@ export default function Header({ onBack, title, accent, icon: Icon, info }: Prop
         onTouchStart={e => (e.currentTarget.style.background = 'var(--surface2)')}
         onTouchEnd={e => { e.currentTarget.style.background = 'var(--surface)'; }}
       >
-        <FaGlobe size={10} />{lang === 'bn' ? 'EN' : 'বাং'}
+        <FaGlobe size={10} />{lang === 'bn' ? 'EN' : 'à¦¬à¦¾à¦‚'}
       </button>
     </div>
   );

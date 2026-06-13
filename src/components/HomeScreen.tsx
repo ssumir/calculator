@@ -29,8 +29,8 @@ html,body,#root{width:100%;height:100%;overflow:hidden;background:#07080d}
 @keyframes _bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-5px) rotate(2deg)}}
 .hsc-card{
   position:relative;cursor:pointer;border:none;
-  background:rgba(255,255,255,0.034);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.07);
+  background:var(--surface);
+  box-shadow:inset 0 0 0 1px var(--border);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   overflow:hidden;outline:none;
   transition:transform .16s cubic-bezier(.22,1,.36,1),background .16s,box-shadow .16s;
@@ -43,8 +43,8 @@ html,body,#root{width:100%;height:100%;overflow:hidden;background:#07080d}
 .hsc-card:hover::before,.hsc-card:focus-visible::before{opacity:1}
 .hsc-card:hover{
   transform:translateY(-3px) scale(1.03);
-  background:rgba(255,255,255,0.07);
-  box-shadow:inset 0 0 0 1px var(--ac)55,0 0 18px var(--ac)2a;
+  background:var(--surface2);
+  box-shadow:inset 0 0 0 1.5px var(--ac)88,0 0 18px var(--ac)2a;
 }
 .hsc-card:active{transform:scale(0.93)!important;transition-duration:.06s}
 .hsc-card:focus-visible{box-shadow:0 0 0 2px var(--ac)}
@@ -56,21 +56,21 @@ html,body,#root{width:100%;height:100%;overflow:hidden;background:#07080d}
 }
 .hsc-pod{
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  background:linear-gradient(135deg,var(--ac)1a 0%,var(--ac)08 100%);
-  border:1px solid var(--ac)30;
+  background:var(--surface2);
+  border:1.5px solid var(--border2,var(--border));
   transition:transform .16s,box-shadow .16s;
 }
 .hsc-card:hover .hsc-pod{transform:scale(1.1);box-shadow:0 0 10px var(--ac)3a}
-.hsc-lm{font-weight:700;color:#eeedf5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;width:100%;text-align:center}
-.hsc-ls{font-weight:400;color:#6b6988;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;width:100%;text-align:center}
+.hsc-lm{font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;width:100%;text-align:center}
+.hsc-ls{font-weight:400;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;width:100%;text-align:center}
 .hsc-langbtn{
-  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
-  color:#a0a0c0;cursor:pointer;display:flex;align-items:center;gap:6px;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:6px;
   font-family:'Outfit',sans-serif;font-weight:700;
   transition:background .2s,color .2s;flex-shrink:0;
   border-radius:10px;height:32px;padding:0 14px;font-size:11px;
 }
-.hsc-langbtn:hover{background:rgba(255,255,255,0.11);color:#fff}
+.hsc-langbtn:hover{background:var(--surface2);color:var(--text)}
 `;
 
 const ICON_MAP: Record<string, React.ComponentType<{ size?: number; color?: string }>> = {
@@ -103,7 +103,7 @@ function calcLayout(cw: number, ch: number, hdrH: number): Layout {
   const pad    = Math.max(8, Math.round(cw * 0.022));
   const labelH = 26; // section label height + margin
 
-  // Available space — tab bar is a SIBLING in App.tsx, not inside here
+  // Available space â€” tab bar is a SIBLING in App.tsx, not inside here
   const availW = cw - pad * 2;
   const availH = ch - hdrH - labelH - pad * 2;
 
@@ -130,7 +130,7 @@ function calcLayout(cw: number, ch: number, hdrH: number): Layout {
 interface Props {
   onOpen:   (id: string) => void;
   history:  Record<string, string[]>;
-  // tabBarHeight no longer needed — BottomNav is a sibling in App.tsx
+  // tabBarHeight no longer needed â€” BottomNav is a sibling in App.tsx
 }
 
 export default function HomeScreen({ onOpen, history }: Props) {
@@ -152,7 +152,7 @@ export default function HomeScreen({ onOpen, history }: Props) {
   const recompute = useCallback(() => {
     const root = rootRef.current;
     if (!root) return;
-    // Measure our actual container — not window — so it works in any shell
+    // Measure our actual container â€” not window â€” so it works in any shell
     const { width: cw, height: ch } = root.getBoundingClientRect();
     const hdrH = hdrRef.current?.offsetHeight ?? 56;
     if (cw > 0 && ch > 0) setLayout(calcLayout(cw, ch, hdrH));
@@ -263,7 +263,7 @@ export default function HomeScreen({ onOpen, history }: Props) {
               marginBottom: 8, flexShrink: 0,
             }}>{t.selectCalc}</p>
 
-            {/* Grid column — fills remaining height evenly across rows */}
+            {/* Grid column â€” fills remaining height evenly across rows */}
             <div style={{
               flex: 1, minHeight: 0,
               display: 'flex', flexDirection: 'column',
