@@ -3,17 +3,19 @@ import {
   FaCalculator, FaUniversity, FaBirthdayCake, FaWeight,
   FaFire, FaReceipt, FaChartLine, FaTshirt, FaRuler,
   FaExchangeAlt, FaGlobe, FaRulerCombined, FaMapMarkedAlt, FaBalanceScale,
+  FaSun, FaMoon,
 } from 'react-icons/fa';
 import { useLang } from '../context/LangContext.tsx';
+import { useTheme } from '../context/ThemeContext.tsx';
 import { APPS } from '../utils/constants.ts';
 
 const T = {
-  bgBody:   '#07080d',
-  bgHeader: 'rgba(7,8,13,0.92)',
-  textPri:  '#eeedf5',
-  textSec:  '#8b89a8',
-  textMuted:'#3c3c52',
-  border:   'rgba(255,255,255,0.07)',
+  bgBody:   'var(--bg)',
+  bgHeader: 'var(--surface)',
+  textPri:  'var(--text)',
+  textSec:  'var(--text2)',
+  textMuted:'var(--text3)',
+  border:   'var(--border)',
   font:     "'Noto Serif Bengali','Outfit','Noto Sans Bengali',sans-serif",
   fontMono: "'Space Mono',monospace",
 };
@@ -23,6 +25,7 @@ const STYLES = `
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body,#root{width:100%;height:100%;overflow:hidden;background:#07080d}
 @keyframes _floatUp{from{opacity:0;transform:translateY(14px) scale(0.92)}to{opacity:1;transform:none}}
+.hsc-theme-btn{transition:background 0.2s,color 0.2s;}
 @keyframes _bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-5px) rotate(2deg)}}
 .hsc-card{
   position:relative;cursor:pointer;border:none;
@@ -132,6 +135,7 @@ interface Props {
 
 export default function HomeScreen({ onOpen, history }: Props) {
   const { t, lang, toggle } = useLang();
+  const { isDark, toggleTheme } = useTheme();
   const rootRef = useRef<HTMLDivElement>(null);
   const hdrRef  = useRef<HTMLElement>(null);
   const [layout, setLayout] = useState<Layout | null>(null);
@@ -214,6 +218,23 @@ export default function HomeScreen({ onOpen, history }: Props) {
             }}>{t.tagline}</p>
           </div>
         </div>
+        <button
+          className="hsc-theme-btn"
+          onClick={toggleTheme}
+          title={isDark ? 'Day mode' : 'Night mode'}
+          style={{
+            background: isDark ? '#1a1500' : '#f0eeff',
+            border: `1px solid ${isDark ? '#f59e0b40' : '#7c3aed40'}`,
+            color: isDark ? '#f59e0b' : '#7c3aed',
+            borderRadius: 20, padding: '5px 12px',
+            fontSize: 11, fontWeight: 700, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: 5,
+            fontFamily: 'inherit',
+          }}
+        >
+          {isDark ? <FaSun size={11} /> : <FaMoon size={11} />}
+          <span>{isDark ? (lang === 'bn' ? 'দিন' : 'Day') : (lang === 'bn' ? 'রাত' : 'Night')}</span>
+        </button>
         <button className="hsc-langbtn" onClick={toggle}>
           <FaGlobe size={11} color="#6366f1" />
           <span>{lang === 'bn' ? 'EN' : 'বাং'}</span>

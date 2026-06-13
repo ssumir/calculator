@@ -7,11 +7,11 @@ import { useState, useEffect } from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 
 const D = {
-  surface: '#1a1a1e',
-  border:  '#2e2e38',
-  textPri: '#f1f0f5',
-  textSec: '#6b6780',
-  textDim: '#3a3a48',
+  surface: 'var(--surface)',
+  border:  'var(--border)',
+  textPri: 'var(--text)',
+  textSec: 'var(--text2)',
+  textDim: 'var(--text3)',
   font:    "'Noto Serif Bengali','Outfit','Noto Sans Bengali',sans-serif",
 };
 

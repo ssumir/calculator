@@ -1,12 +1,18 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.mariocalculator.myapp',
+  appId: 'com.ssumir.calculator',
   appName: 'Mario Calculator',
   webDir: 'dist',
   server: {
-    androidScheme: 'https'
-  }
+    androidScheme: 'https',
+  },
+  android: {
+    buildOptions: {
+      keystorePath: 'android.keystore',
+      keystoreAlias: 'android',
+    },
+  },
 };
 
 export default config;

@@ -9,5 +9,13 @@ export default defineConfig({
     target: 'es2015',
     cssTarget: 'chrome61',
     chunkSizeWarningLimit: 2000,
-  }
+    minify: 'esbuild',        // enable JS minification
+    cssMinify: true,          // enable CSS minification
+    rollupOptions: {
+      output: {
+        // Keep single chunk for Capacitor WebView compatibility
+        manualChunks: undefined,
+      },
+    },
+  },
 })

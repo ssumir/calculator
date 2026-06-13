@@ -5,12 +5,12 @@
   "launcherName": "Mario Calc",
   "display": "standalone",
   "orientation": "portrait",
-  "themeColor": "#667eea",
-  "navigationColor": "#667eea",
-  "navigationColorDark": "#4f46e5",
-  "navigationDividerColor": "#667eea",
-  "navigationDividerColorDark": "#4f46e5",
-  "backgroundColor": "#f0f4ff",
+  "themeColor": "#0f0f14",
+  "navigationColor": "#0f0f14",
+  "navigationColorDark": "#07080d",
+  "navigationDividerColor": "#2e2e38",
+  "navigationDividerColorDark": "#1a1a1e",
+  "backgroundColor": "#0f0f14",
   "enableNotifications": false,
   "startUrl": "/calculator/",
   "iconUrl": "https://sktechchrm.github.io/calculator/icons/icon-512.png",
@@ -23,15 +23,21 @@
   "webManifestUrl": "https://sktechchrm.github.io/calculator/manifest.json",
   "fallbackType": "customtabs",
   "features": {
-    "locationDelegation": { "enabled": false },
-    "playBilling": { "enabled": false }
+    "locationDelegation": {
+      "enabled": false
+    },
+    "playBilling": {
+      "enabled": false
+    }
   },
-  "alphaDependencies": { "enabled": false },
+  "alphaDependencies": {
+    "enabled": false
+  },
   "enableSiteSettingsShortcut": true,
   "isChromeOSOnly": false,
   "isMetaQuest": false,
   "fullScopeUrl": "https://sktechchrm.github.io/calculator/",
-  "minSdkVersion": 19,
+  "minSdkVersion": 24,
   "rotationEnabled": false,
   "signingKey": {
     "path": "./android.keystore",

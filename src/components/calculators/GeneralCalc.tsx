@@ -1,29 +1,43 @@
 import { useState, useRef, useEffect } from 'react';
 import { FaShareAlt, FaHistory, FaTrash, FaChevronDown } from 'react-icons/fa';
 import { useLang } from '../../context/LangContext.tsx';
+import { useTheme } from '../../context/ThemeContext.tsx';
 import { shareWA, buildShare } from '../../utils/share.ts';
 
-// ── Palette ───────────────────────────────────────────────────────────────────
-const CALC_BG  = '#f5f4ff';
-const DISP_BG  = '#13131a';
-const BTN_SCI  = '#ede9ff';
-const BTN_NUM  = '#e8e8f0';
-const BTN_EQ   = '#7c3aed';
-const BTN_DEL  = '#fde8e8';
-const BTN_FN   = '#ede9ff';
-const BORDER_SCI = '#d8d0ff';
-const BORDER_NUM = '#d8d8e8';
-const TEXT_SCI = '#6d28d9';
-const TEXT_NUM = '#1e1b2e';
-const TEXT_OP  = '#f97316';
-const TEXT_DIM = '#5a5a7a';
-const TEXT_ANS = '#f0eeff';
-const DIVIDER  = '#d0cce8';
+// ── Palette (theme-aware via CSS custom properties) ──────────────────────────
+// These are resolved at runtime via getComputedStyle or fallback to dark defaults
+const CALC_BG_DARK  = '#1c1c24';
+const CALC_BG_LIGHT = '#f5f4ff';
+const DISP_BG_DARK  = '#0d0d14';
+const DISP_BG_LIGHT = '#1e1040';
+
+const BTN_EQ  = '#7c3aed';
+const TEXT_OP = '#f97316';
+
+// Dynamic palette based on data-theme attribute
+function getPalette() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  return {
+    CALC_BG:    isLight ? CALC_BG_LIGHT  : CALC_BG_DARK,
+    DISP_BG:    isLight ? DISP_BG_LIGHT  : DISP_BG_DARK,
+    BTN_SCI:    isLight ? '#ede9ff'      : '#2a2038',
+    BTN_NUM:    isLight ? '#e8e8f0'      : '#252530',
+    BTN_DEL:    isLight ? '#fde8e8'      : '#2a1010',
+    BTN_FN:     isLight ? '#ede9ff'      : '#1e1e2a',
+    BORDER_SCI: isLight ? '#d8d0ff'      : '#3d2d6a',
+    BORDER_NUM: isLight ? '#d8d8e8'      : '#32323e',
+    TEXT_SCI:   isLight ? '#6d28d9'      : '#a78bfa',
+    TEXT_NUM:   isLight ? '#1e1b2e'      : '#e8e7f0',
+    TEXT_DIM:   isLight ? '#5a5a7a'      : '#6b6780',
+    TEXT_ANS:   isLight ? '#1a0050'      : '#f0eeff',
+    DIVIDER:    isLight ? '#d0cce8'      : '#2e2e40',
+  };
+}
 const TAB_COLORS: Record<string,string> = {
   Algebra:'#7c3aed', Trigonometry:'#16a34a', Calculus:'#64748b', Hyperbolic:'#e11d48',
 };
 
-type SciKey = { label:string; token:string; color?:string };
+type SciKey = { label:string; token:string; color?:string; unsupported?:boolean };
 type NumKey = { label:string; type:'num'|'op'|'fn'|'eq'|'zero'|'del' };
 type Row    = { sci:SciKey[]; num:NumKey[] };
 
@@ -43,7 +57,7 @@ const TAB_ROWS: Record<string,Row[]> = {
     {sci:[{label:'DEG',token:'__DEG'},{label:'RAD',token:'__RAD'},{label:'°→r',token:'*(π/180)'}],num:[{label:'0',type:'zero'},{label:'.',type:'num'},{label:'▶',type:'eq'},{label:'+',type:'op'}]},
   ],
   Calculus:[
-    {sci:[{label:'d/dx',token:'d/dx('},{label:'∫dx',token:'∫('},{label:'Σ',token:'Σ('}],num:[{label:'(',type:'fn'},{label:')',type:'fn'},{label:'⌫',type:'del'},{label:'AC',type:'fn'}]},
+    {sci:[{label:'d/dx',token:'d/dx(',unsupported:true},{label:'∫dx',token:'∫(',unsupported:true},{label:'Σ',token:'Σ(',unsupported:true}],num:[{label:'(',type:'fn'},{label:')',type:'fn'},{label:'⌫',type:'del'},{label:'AC',type:'fn'}]},
     {sci:[{label:'nPr',token:'nPr('},{label:'nCr',token:'nCr('},{label:'n!',token:'!'}],num:[{label:'7',type:'num'},{label:'8',type:'num'},{label:'9',type:'num'},{label:'÷',type:'op'}]},
     {sci:[{label:'log',token:'log('},{label:'ln',token:'ln('},{label:'log₂',token:'log₂('}],num:[{label:'4',type:'num'},{label:'5',type:'num'},{label:'6',type:'num'},{label:'×',type:'op'}]},
     {sci:[{label:'√',token:'√('},{label:'∛',token:'∛('},{label:'xʸ',token:'**'}],num:[{label:'1',type:'num'},{label:'2',type:'num'},{label:'3',type:'num'},{label:'−',type:'op'}]},
@@ -127,7 +141,9 @@ function exprFontSize(s:string){const l=s.length;if(l>32)return 11;if(l>22)retur
 interface Props{history:string[];onAdd:(id:string,entry:string)=>void;onClear?:(id:string)=>void;}
 
 export default function GeneralCalc({history,onAdd,onClear}:Props){
-  const{t,lang}=useLang(); const bn=lang==='bn';
+  const{t,lang}=useLang();
+  const{isDark}=useTheme();
+  const{CALC_BG,DISP_BG,BTN_SCI,BTN_NUM,BTN_DEL,BTN_FN,BORDER_SCI,BORDER_NUM,TEXT_SCI,TEXT_NUM,TEXT_DIM,TEXT_ANS,DIVIDER}=isDark?{CALC_BG:CALC_BG_DARK,DISP_BG:DISP_BG_DARK,BTN_SCI:'#2a2038',BTN_NUM:'#252530',BTN_DEL:'#2a1010',BTN_FN:'#1e1e2a',BORDER_SCI:'#3d2d6a',BORDER_NUM:'#32323e',TEXT_SCI:'#a78bfa',TEXT_NUM:'#e8e7f0',TEXT_DIM:'#6b6780',TEXT_ANS:'#f0eeff',DIVIDER:'#2e2e40'}:{CALC_BG:CALC_BG_LIGHT,DISP_BG:DISP_BG_LIGHT,BTN_SCI:'#ede9ff',BTN_NUM:'#e8e8f0',BTN_DEL:'#fde8e8',BTN_FN:'#ede9ff',BORDER_SCI:'#d8d0ff',BORDER_NUM:'#d8d8e8',TEXT_SCI:'#6d28d9',TEXT_NUM:'#1e1b2e',TEXT_DIM:'#5a5a7a',TEXT_ANS:'#1a0050',DIVIDER:'#d0cce8'}; const bn=lang==='bn';
   const[expr,setExpr]=useState('');
   const[result,setResult]=useState<string|number|null>(null);
   const[sci,setSci]=useState(false);
@@ -147,7 +163,7 @@ export default function GeneralCalc({history,onAdd,onClear}:Props){
     setResult(r);
     onAdd('general',`${expr} = ${r}`);
   };
-  const handleSci=(key:SciKey)=>{if(key.token==='__DEG'){setDeg(true);return;}if(key.token==='__RAD'){setDeg(false);return;}ap(key.token);};
+  const handleSci=(key:SciKey)=>{if(key.unsupported){return;}if(key.token==='__DEG'){setDeg(true);return;}if(key.token==='__RAD'){setDeg(false);return;}ap(key.token);};
   const handleNum=(key:NumKey)=>{if(key.type==='eq'||key.label==='▶'){calc();return;}if(key.label==='AC'){clr();return;}if(key.label==='⌫'){del();return;}if(key.label==='+/−'){setExpr(e=>e.startsWith('-')?e.slice(1):'-'+e);return;}if(key.type==='op')setActiveOp(key.label);ap(key.label);};
   const bp=(e:any)=>{e.currentTarget.style.transform='scale(0.91)';e.currentTarget.style.opacity='0.75';};
   const br=(e:any)=>{e.currentTarget.style.transform='';e.currentTarget.style.opacity='1';};
@@ -206,8 +222,8 @@ export default function GeneralCalc({history,onAdd,onClear}:Props){
             rows.map((row,ri)=>(
               <div key={ri} style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 3px 1fr 1fr 1fr 1fr',gap:6,flex:1,minHeight:0}}>
                 {row.sci.map((key,ki)=>{
-                  const col=key.color||TEXT_SCI,isSpecial=key.label==='AC'||key.label==='⌫';
-                  return(<button key={ki} onClick={()=>handleSci(key)} onMouseDown={bp} onMouseUp={br} onTouchStart={bp} onTouchEnd={br} style={{background:isSpecial?BTN_DEL:BTN_SCI,color:isSpecial?'#dc2626':col,border:`1.5px solid ${isSpecial?'#fca5a5':BORDER_SCI}`,borderRadius:14,height:btnH,fontSize:sciFs(key.label),fontWeight:700,fontFamily:"'Inter','Noto Serif Bengali',sans-serif",cursor:'pointer',transition:'transform 0.08s,opacity 0.08s',display:'flex',alignItems:'center',justifyContent:'center',overflow:'hidden',boxShadow:'0 1px 3px rgba(100,80,180,0.1)'}}>{key.label}</button>);
+                  const col=key.color||TEXT_SCI,isSpecial=key.label==='AC'||key.label==='⌫',isUnsupported=!!key.unsupported;
+                  return(<button key={ki} title={isUnsupported?'Not yet supported':undefined} onClick={()=>handleSci(key)} onMouseDown={isUnsupported?undefined:bp} onMouseUp={isUnsupported?undefined:br} onTouchStart={isUnsupported?undefined:bp} onTouchEnd={isUnsupported?undefined:br} style={{background:isSpecial?BTN_DEL:BTN_SCI,color:isSpecial?'#dc2626':isUnsupported?TEXT_DIM:col,border:`1.5px solid ${isSpecial?'#fca5a5':BORDER_SCI}`,borderRadius:14,height:btnH,fontSize:sciFs(key.label),fontWeight:700,fontFamily:"'Inter','Noto Serif Bengali',sans-serif",cursor:isUnsupported?'not-allowed':'pointer',opacity:isUnsupported?0.4:1,transition:'transform 0.08s,opacity 0.08s',display:'flex',alignItems:'center',justifyContent:'center',overflow:'hidden',boxShadow:'0 1px 3px rgba(100,80,180,0.1)'}}>{key.label}</button>);
                 })}
                 <div style={{background:DIVIDER,borderRadius:2,margin:'6px 0'}}/>
                 {row.num.map((key,ki)=>{

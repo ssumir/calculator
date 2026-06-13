@@ -1,21 +1,22 @@
 import { useState, useRef, useEffect } from 'react';
-import { FaArrowLeft, FaGlobe, FaInfoCircle, FaTimes } from 'react-icons/fa';
+import { FaArrowLeft, FaGlobe, FaInfoCircle, FaTimes, FaSun, FaMoon } from 'react-icons/fa';
 import { useLang } from '../context/LangContext.tsx';
+import { useTheme } from '../context/ThemeContext.tsx';
 
 interface Props {
   onBack:  () => void;
   title:   string;
   accent:  string;
   icon?:   React.ComponentType<{ size?: number; color?: string }>;
-  info?:   string; // tooltip text — passed from each calculator
+  info?:   string;
 }
 
 export default function Header({ onBack, title, accent, icon: Icon, info }: Props) {
   const { toggle, lang } = useLang();
+  const { isDark, toggleTheme } = useTheme();
   const [tooltip, setTooltip] = useState(false);
   const tipRef = useRef<HTMLDivElement>(null);
 
-  // Close on outside click
   useEffect(() => {
     if (!tooltip) return;
     const fn = (e: MouseEvent | TouchEvent) => {
@@ -23,34 +24,41 @@ export default function Header({ onBack, title, accent, icon: Icon, info }: Prop
         setTooltip(false);
     };
     document.addEventListener('mousedown', fn);
-    document.addEventListener('touchstart', fn as any);
+    document.addEventListener('touchstart', fn as EventListener);
     return () => {
       document.removeEventListener('mousedown', fn);
-      document.removeEventListener('touchstart', fn as any);
+      document.removeEventListener('touchstart', fn as EventListener);
     };
   }, [tooltip]);
 
+  const btnBase: React.CSSProperties = {
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    cursor: 'pointer', flexShrink: 0, transition: 'all 0.18s',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+  };
+
   return (
     <div style={{
-      background: '#0d0d10',
+      background: 'var(--surface)',
       borderBottom: `1px solid ${accent}25`,
-      padding: '0 14px',
+      padding: '0 12px',
       paddingTop: 'calc(env(safe-area-inset-top, 0px) + 10px)',
       paddingBottom: 10,
-      display: 'flex', alignItems: 'center', gap: 10,
+      display: 'flex', alignItems: 'center', gap: 8,
       flexShrink: 0, position: 'sticky', top: 0, zIndex: 100,
       minHeight: 56,
-      boxShadow: `0 2px 16px rgba(0,0,0,0.4)`,
+      boxShadow: isDark
+        ? '0 2px 16px rgba(0,0,0,0.4)'
+        : '0 2px 12px rgba(0,0,0,0.08)',
+      transition: 'background 0.25s ease, box-shadow 0.25s ease',
     }}>
+
       {/* Back button */}
-      <button onClick={onBack} style={{
-        background: '#1a1a1e', border: `1px solid #2e2e38`,
-        color: accent, borderRadius: 11, width: 36, height: 36, minWidth: 36,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        cursor: 'pointer', flexShrink: 0, transition: 'background 0.15s',
-      }}
-        onTouchStart={e => (e.currentTarget.style.background = '#2e2e38')}
-        onTouchEnd={e => { e.currentTarget.style.background = '#1a1a1e'; }}
+      <button
+        onClick={onBack}
+        style={{ ...btnBase, color: accent, borderRadius: 11, width: 36, height: 36, minWidth: 36 }}
+        onTouchStart={e => (e.currentTarget.style.background = 'var(--surface2)')}
+        onTouchEnd={e => { e.currentTarget.style.background = 'var(--surface)'; }}
       >
         <FaArrowLeft size={13} />
       </button>
@@ -68,61 +76,57 @@ export default function Header({ onBack, title, accent, icon: Icon, info }: Prop
 
       {/* Title */}
       <span style={{
-        flex: 1, fontSize: 15, fontWeight: 800, color: '#e8e8e8',
+        flex: 1, fontSize: 15, fontWeight: 800, color: 'var(--text)',
         overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         minWidth: 0, letterSpacing: 0.2,
+        transition: 'color 0.25s ease',
       }}>{title}</span>
 
-      {/* Info / tooltip button — only if info text provided */}
+      {/* Info / tooltip button */}
       {info && (
         <div ref={tipRef} style={{ position: 'relative', flexShrink: 0 }}>
           <button
             onClick={() => setTooltip(t => !t)}
             aria-label="How to use"
             style={{
+              ...btnBase,
               width: 34, height: 34, borderRadius: '50%',
-              background: tooltip ? accent : '#1a1a1e',
-              border: `1px solid ${tooltip ? accent : '#2e2e38'}`,
+              background: tooltip ? accent : 'var(--surface)',
+              border: `1px solid ${tooltip ? accent : 'var(--border)'}`,
               color: tooltip ? '#fff' : accent,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', transition: 'all 0.18s', flexShrink: 0,
             }}
           >
             {tooltip ? <FaTimes size={12} /> : <FaInfoCircle size={15} />}
           </button>
 
-          {/* Tooltip card */}
           {tooltip && (
             <div style={{
               position: 'absolute', top: 42, right: 0,
               width: 'min(290px, 80vw)',
-              background: '#1a1a1e',
+              background: 'var(--surface)',
               border: `2px solid ${accent}40`,
               borderRadius: 14,
               padding: '14px 16px',
-              boxShadow: `0 8px 32px rgba(0,0,0,0.6)`,
-              fontSize: 13, color: '#f1f0f5',
+              boxShadow: isDark
+                ? '0 8px 32px rgba(0,0,0,0.6)'
+                : '0 8px 24px rgba(0,0,0,0.12)',
+              fontSize: 13, color: 'var(--text)',
               lineHeight: 1.7, fontWeight: 500,
               zIndex: 500,
               whiteSpace: 'pre-line',
               fontFamily: "'Noto Serif Bengali','Outfit',sans-serif",
             }}>
-              {/* Caret arrow */}
               <div style={{
                 position: 'absolute', top: -7, right: 12,
                 width: 13, height: 13,
-                background: '#1a1a1e',
+                background: 'var(--surface)',
                 border: `2px solid ${accent}40`,
                 transform: 'rotate(45deg)',
                 borderBottom: 'none', borderRight: 'none',
               }} />
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10,
-              }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10 }}>
                 <FaInfoCircle size={13} color={accent} />
-                <span style={{ fontWeight: 800, fontSize: 13, color: accent }}>
-                  How to use
-                </span>
+                <span style={{ fontWeight: 800, fontSize: 13, color: accent }}>How to use</span>
               </div>
               {info}
             </div>
@@ -130,14 +134,35 @@ export default function Header({ onBack, title, accent, icon: Icon, info }: Prop
         </div>
       )}
 
+      {/* Theme toggle — day/night */}
+      <button
+        onClick={toggleTheme}
+        title={isDark ? 'Switch to Day mode' : 'Switch to Night mode'}
+        style={{
+          ...btnBase,
+          width: 34, height: 34, borderRadius: 11,
+          color: isDark ? '#f59e0b' : '#7c3aed',
+          border: `1px solid ${isDark ? '#f59e0b40' : '#7c3aed40'}`,
+          background: isDark ? '#1a1500' : '#f0eeff',
+        }}
+        onTouchStart={e => (e.currentTarget.style.opacity = '0.7')}
+        onTouchEnd={e => { e.currentTarget.style.opacity = '1'; }}
+      >
+        {isDark ? <FaSun size={14} /> : <FaMoon size={14} />}
+      </button>
+
       {/* Language toggle */}
-      <button onClick={toggle} style={{
-        background: '#1a1a1e', border: '1px solid #2e2e38',
-        borderRadius: 20, padding: '5px 12px',
-        fontSize: 11, fontWeight: 700, color: '#a8a4b8',
-        cursor: 'pointer', display: 'flex', alignItems: 'center',
-        gap: 4, flexShrink: 0, fontFamily: 'inherit',
-      }}>
+      <button
+        onClick={toggle}
+        style={{
+          ...btnBase,
+          borderRadius: 20, padding: '5px 11px',
+          fontSize: 11, fontWeight: 700, color: 'var(--text2)',
+          gap: 4,
+        }}
+        onTouchStart={e => (e.currentTarget.style.background = 'var(--surface2)')}
+        onTouchEnd={e => { e.currentTarget.style.background = 'var(--surface)'; }}
+      >
         <FaGlobe size={10} />{lang === 'bn' ? 'EN' : 'বাং'}
       </button>
     </div>

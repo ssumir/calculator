@@ -2,6 +2,13 @@ export interface AppDef {
   id: string; icon: string; color: string; light: string; shadow: string;
 }
 
+/** Shared props interface for every calculator component */
+export interface CalcProps {
+  history: string[];
+  onAdd: (id: string, entry: string) => void;
+  onClear?: (id: string) => void;
+}
+
 // Dark, rich, professional colors — no blue/sky
 export const APPS: AppDef[] = [
   { id: 'general',   icon: 'FaCalculator',    color: '#e8e8e8', light: '#1e1e22', shadow: '#e8e8e820' },

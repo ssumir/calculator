@@ -34,8 +34,8 @@ export const translations = {
       gsize:    { label: 'সাইজ চার্ট',  desc: 'পোশাকের সাইজ' },
       unit:     { label: 'ইউনিট',       desc: 'একক রূপান্তর' },
       gpattern: { label: 'প্যাটার্ন',    desc: 'পোশাকের প্যাটার্ন' },
-      bdland:   { label: 'ভূমি মাপ',    desc: 'বাংলাদেশ ভূমি একক' },
-      bdweight: { label: 'ওজন মাপ',     desc: 'বাংলাদেশ ওজন একক' },
+      bdland:   { label: 'ভূমির মাপ',    desc: 'বাংলাদেশ ভূমির মাপ' },
+      bdweight: { label: 'পণ্যের ওজন',     desc: 'বাংলাদেশ ওজন একক' },
     },
     emi: {
       loanAmount: 'ঋণের পরিমাণ (৳)',
@@ -154,8 +154,8 @@ export const translations = {
       gsize:    { label: 'Size Chart',  desc: 'Clothing Size Chart' },
       unit:     { label: 'Unit',        desc: 'Unit Converter' },
       gpattern: { label: 'Pattern',     desc: 'Garments Pattern' },
-      bdland:   { label: 'BD Land',     desc: 'BD Land Measurement' },
-      bdweight: { label: 'BD Weight',   desc: 'BD Weight Scale' },
+      bdland:   { label: 'Land',        desc: 'Land Measurement' },
+      bdweight: { label: 'Goods Weight',desc: 'Weight Scale' },
     },
     emi: {
       loanAmount: 'Loan Amount (৳)',

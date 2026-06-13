@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FaHeart, FaEye, FaTint, FaBrain, FaRunning, FaHospital, FaExclamationTriangle } from 'react-icons/fa';
 import { DateThreeInput, ResultCard, StatGrid } from '../ui';
 import CalcShell from '../CalcShell';
+import type { CalcProps } from '../../utils/constants.ts';
 import { useLang } from '../../context/LangContext.tsx';
 import { shareWA, buildShare } from '../../utils/share.ts';
 
@@ -15,7 +16,7 @@ const OVER40 = [
   { icon: FaHospital, c: '#f59e0b', bn: 'ডাক্তার পরামর্শ', en: 'Doctor Visit',  bn2: '৬ মাসে একবার স্বাস্থ্য পরীক্ষা।',               en2: 'Health checkup every 6 months.' },
 ];
 
-export default function AgeCalc({ history, onAdd, onClear }: any) {
+export default function AgeCalc({ history, onAdd, onClear }: CalcProps) {
   const { t, lang } = useLang(); const a = t.age;
   const [dd, setDd] = useState(''); const [mm, setMm] = useState(''); const [yyyy, setYyyy] = useState('');
   const [result, setResult] = useState<any>(null);
@@ -58,8 +59,8 @@ export default function AgeCalc({ history, onAdd, onClear }: any) {
           <ResultCard accent={A}>
             <div style={{ textAlign: 'center', marginBottom: 14 }}>
               <div style={{ fontSize: 'clamp(42px,10vw,56px)', fontWeight: 900, color: A, lineHeight: 1 }}>{result.yr}</div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#6b6780', marginTop: 4 }}>{a.yearsOld}</div>
-              <div style={{ fontSize: 14, color: '#3a3a48', marginTop: 2 }}>{result.mo} {a.month} & {result.dy} {a.day}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text3)', marginTop: 4 }}>{a.yearsOld}</div>
+              <div style={{ fontSize: 14, color: 'var(--text4)', marginTop: 2 }}>{result.mo} {a.month} & {result.dy} {a.day}</div>
             </div>
             <StatGrid items={[
               [a.totalDays,   result.totalDays.toLocaleString(),  A],
@@ -70,18 +71,18 @@ export default function AgeCalc({ history, onAdd, onClear }: any) {
           </ResultCard>
 
           {result.over40 && (
-            <div style={{ marginTop: 16, background: '#1a1200', border: '2px solid #78350f', borderRadius: 18, padding: '16px' }}>
+            <div style={{ marginTop: 16, background: 'var(--surface)', border: '2px solid #78350f', borderRadius: 18, padding: '16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
                 <FaExclamationTriangle color="#f59e0b" size={16} />
                 <span style={{ fontSize: 15, fontWeight: 700, color: '#fbbf24' }}>{a.over40Title}</span>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {OVER40.map((item, i) => (
-                  <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', background: '#111', borderRadius: 12, padding: '10px 12px' }}>
+                  <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', background: 'var(--surface2)', borderRadius: 12, padding: '10px 12px' }}>
                     <item.icon size={17} color={item.c} style={{ flexShrink: 0, marginTop: 2 }} />
                     <div style={{ minWidth: 0 }}>
                       <div style={{ fontSize: 13, fontWeight: 700, color: item.c }}>{lang === 'bn' ? item.bn : item.en}</div>
-                      <div style={{ fontSize: 12, color: '#6b6780', marginTop: 2, lineHeight: 1.5 }}>{lang === 'bn' ? item.bn2 : item.en2}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 2, lineHeight: 1.5 }}>{lang === 'bn' ? item.bn2 : item.en2}</div>
                     </div>
                   </div>
                 ))}

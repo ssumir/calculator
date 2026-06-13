@@ -1,4 +1,4 @@
-import { FaCalculator, FaTshirt, FaMoneyBillWave, FaEllipsisH, FaHome, FaQuestionCircle } from 'react-icons/fa';
+import { FaCalculator, FaTshirt, FaMoneyBillWave, FaHome, FaQuestionCircle } from 'react-icons/fa';
 import { useLang } from '../context/LangContext.tsx';
 
 interface Tab {
@@ -45,8 +45,8 @@ export default function BottomNav({ activeId, onOpen, onShowHome }: Props) {
   return (
     <div style={{
       flexShrink: 0,
-      background: '#0d0d10',
-      borderTop: '1px solid #1e1e26',
+      background: 'var(--bg)',
+      borderTop: '1px solid var(--border)',
       paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       zIndex: 200,
       boxShadow: '0 -4px 24px rgba(0,0,0,0.5)',
@@ -80,11 +80,11 @@ export default function BottomNav({ activeId, onOpen, onShowHome }: Props) {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'background 0.18s',
               }}>
-                <Icon size={17} color={isActive ? tab.color : '#3a3a4a'} />
+                <Icon size={17} color={isActive ? tab.color : 'var(--text4)'} />
               </div>
               <span style={{
                 fontSize: 9, fontWeight: isActive ? 700 : 500,
-                color: isActive ? tab.color : '#3a3a4a',
+                color: isActive ? tab.color : 'var(--text4)',
                 fontFamily: 'inherit', transition: 'color 0.18s',
               }}>
                 {lang === 'bn' ? tab.bn : tab.en}

@@ -85,11 +85,11 @@ function PatternPieceView({piece,type,color}:{piece:any;type:string;color:string
         {points.slice(0,5).map((pt:any)=>(
           <div key={pt.key} style={{display:'flex',alignItems:'center',gap:4,fontSize:9,lineHeight:1.4}}>
             <span style={{fontWeight:800,color,minWidth:14,fontFamily:'monospace'}}>{pt.key}</span>
-            <span style={{color:'#6b6780',flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{pt.label}</span>
+            <span style={{color:'var(--text3)',flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{pt.label}</span>
             <span style={{fontWeight:700,color:'#e8e8e8',fontFamily:'monospace',fontSize:9}}>{pt.val}</span>
           </div>
         ))}
-        {points.length>5&&<div style={{fontSize:9,color:'#6b6780'}}>+{points.length-5} more</div>}
+        {points.length>5&&<div style={{fontSize:9,color:'var(--text3)'}}>+{points.length-5} more</div>}
       </div>
     </div>
   );
@@ -141,13 +141,13 @@ function PatternCalc({typeId,accent,history,onAdd,onClear}:{typeId:string;accent
           </div>
           <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
             {Object.entries(result.summary||{}).map(([k,v])=>(
-              <div key={k} style={{background:'#1a1a1e',borderRadius:8,padding:'6px 10px',textAlign:'center'}}>
-                <div style={{fontSize:9,color:'#6b6780',fontWeight:600}}>{k}</div>
+              <div key={k} style={{background:'var(--surface)',borderRadius:8,padding:'6px 10px',textAlign:'center'}}>
+                <div style={{fontSize:9,color:'var(--text3)',fontWeight:600}}>{k}</div>
                 <div style={{fontSize:14,fontWeight:800,color:accent}}>{v as string}</div>
               </div>
             ))}
-            <div style={{background:'#1a1a1e',borderRadius:8,padding:'6px 10px',textAlign:'center'}}>
-              <div style={{fontSize:9,color:'#6b6780',fontWeight:600}}>{bn?'কাপড়':'Fabric'}</div>
+            <div style={{background:'var(--surface)',borderRadius:8,padding:'6px 10px',textAlign:'center'}}>
+              <div style={{fontSize:9,color:'var(--text3)',fontWeight:600}}>{bn?'কাপড়':'Fabric'}</div>
               <div style={{fontSize:12,fontWeight:800,color:accent}}>{result.fabric}</div>
             </div>
           </div>
@@ -166,9 +166,9 @@ function PatternCalc({typeId,accent,history,onAdd,onClear}:{typeId:string;accent
         </div>
 
         {/* Symbol guide */}
-        <div style={{background:'#1a1a1e',border:'1px solid #2e2e38',borderRadius:10,padding:'10px 12px',marginBottom:12}}>
+        <div style={{background:'var(--surface)',border:'1px solid #2e2e38',borderRadius:10,padding:'10px 12px',marginBottom:12}}>
           <div style={{fontSize:10,fontWeight:700,color:'#a8a4b8',marginBottom:6}}>{bn?'চিহ্নের অর্থ':'Symbol Guide'}</div>
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'4px 10px',fontSize:10,color:'#6b6780'}}>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'4px 10px',fontSize:10,color:'var(--text3)'}}>
             {([['A,B,C',bn?'মেজারমেন্ট পয়েন্ট':'Measurement point'],['--- ',bn?'সেলাই ভাতা':'Seam allowance'],['arrow',bn?'গ্রেইন লাইন':'Grain line'],['notch',bn?'মিলানো চিহ্ন':'Matching notch']] as [string,string][]).map(([sym,desc])=>(
               <div key={sym} style={{display:'flex',gap:4}}>
                 <span style={{fontFamily:'monospace',color:accent,fontSize:9,minWidth:42}}>{sym}</span>
@@ -198,19 +198,19 @@ export default function GarmentsPattern({history,onAdd,onClear}:CalcProps){
   const handleSection=(sid:typeof section)=>{setSection(sid);setTypeId(SECTIONS.find(s=>s.id===sid)!.items[0].id);};
 
   return(
-    <div style={{width:'100%',height:'100%',display:'flex',flexDirection:'column',overflow:'hidden',background:'#0f0f14',fontFamily:"'Noto Serif Bengali','Outfit',sans-serif"}}>
+    <div style={{width:'100%',height:'100%',display:'flex',flexDirection:'column',overflow:'hidden',background:'var(--bg)',fontFamily:"'Noto Serif Bengali','Outfit',sans-serif"}}>
       {/* Fixed header tabs */}
-      <div style={{flexShrink:0,padding:'10px 14px 0',background:'#0f0f14',borderBottom:'1px solid #1e1e26'}}>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:4,marginBottom:10,background:'#1a1a1e',borderRadius:12,padding:4}}>
+      <div style={{flexShrink:0,padding:'10px 14px 0',background:'var(--bg)',borderBottom:'1px solid #1e1e26'}}>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:4,marginBottom:10,background:'var(--surface)',borderRadius:12,padding:4}}>
           {SECTIONS.map(s=>(
-            <button key={s.id} onClick={()=>handleSection(s.id)} style={{padding:'8px 2px',fontSize:9,fontWeight:700,background:section===s.id?'#2e2e38':'transparent',color:section===s.id?accent:'#6b6780',border:'none',borderRadius:8,cursor:'pointer',fontFamily:'inherit',textAlign:'center',lineHeight:1.3,transition:'all 0.15s'}}>
+            <button key={s.id} onClick={()=>handleSection(s.id)} style={{padding:'8px 2px',fontSize:9,fontWeight:700,background:section===s.id?'var(--border)':'transparent',color:section===s.id?accent:'var(--text3)',border:'none',borderRadius:8,cursor:'pointer',fontFamily:'inherit',textAlign:'center',lineHeight:1.3,transition:'all 0.15s'}}>
               {bn?s.labelBn:s.label}
             </button>
           ))}
         </div>
         <div style={{display:'flex',gap:6,marginBottom:10,flexWrap:'wrap'}}>
           {currentSection.items.map(item=>(
-            <button key={item.id} onClick={()=>setTypeId(item.id)} style={{padding:'7px 10px',fontSize:11,fontWeight:700,background:typeId===item.id?item.color:'#1a1a1e',color:typeId===item.id?'#fff':'#a8a4b8',border:`1.5px solid ${typeId===item.id?item.color:'#2e2e38'}`,borderRadius:20,cursor:'pointer',fontFamily:'inherit',transition:'all 0.15s',whiteSpace:'nowrap'}}>
+            <button key={item.id} onClick={()=>setTypeId(item.id)} style={{padding:'7px 10px',fontSize:11,fontWeight:700,background:typeId===item.id?item.color:'var(--surface)',color:typeId===item.id?'#fff':'#a8a4b8',border:`1.5px solid ${typeId===item.id?item.color:'var(--border)'}`,borderRadius:20,cursor:'pointer',fontFamily:'inherit',transition:'all 0.15s',whiteSpace:'nowrap'}}>
               {bn?item.labelBn:item.label}
             </button>
           ))}

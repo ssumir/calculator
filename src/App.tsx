@@ -7,6 +7,7 @@ import {
 } from 'react-icons/fa';
 
 import { LangProvider, useLang } from './context/LangContext.tsx';
+import { ThemeProvider } from './context/ThemeContext.tsx';
 import { useHistory } from './hooks/useHistory.ts';
 import { APPS } from './utils/constants.ts';
 
@@ -18,10 +19,16 @@ import SupportScreen from './components/SupportScreen.tsx';
 import GeneralCalc    from './components/calculators/GeneralCalc.tsx';
 import EmiCalc        from './components/calculators/EmiCalc.tsx';
 import AgeCalc        from './components/calculators/AgeCalc.tsx';
-import { BmiCalc, CalorieCalc, VatCalc, SmvCalc } from './components/calculators/OtherCalcs.tsx';
-import { GarmentsCalc, GSizeCalc, UnitCalc }       from './components/calculators/NewCalcs.tsx';
+import BmiCalc        from './components/calculators/BmiCalc.tsx';
+import CalorieCalc    from './components/calculators/CalorieCalc.tsx';
+import VatCalc        from './components/calculators/VatCalc.tsx';
+import SmvCalc        from './components/calculators/SmvCalc.tsx';
+import GarmentsCalc   from './components/calculators/GarmentsCalc.tsx';
 import GarmentsPattern from './components/calculators/GarmentsPattern.tsx';
-import { BdLandCalc, BdWeightCalc } from './components/calculators/BdSpecialCalcs.tsx';
+import GSizeCalc      from './components/calculators/GSizeCalc.tsx';
+import UnitCalc       from './components/calculators/UnitCalc.tsx';
+import BdLandCalc     from './components/calculators/BdLandCalc.tsx';
+import BdWeightCalc   from './components/calculators/BdWeightCalc.tsx';
 
 const SCREENS: Record<string, React.ComponentType<any>> = {
   general:  GeneralCalc,
@@ -57,8 +64,8 @@ const APP_LABELS: Record<string, { en: string; bn: string }> = {
   gpattern: { en: 'Pattern',      bn: 'প্যাটার্ন' },
   gsize:    { en: 'Size Chart',   bn: 'সাইজ চার্ট' },
   unit:     { en: 'Unit Convert', bn: 'ইউনিট' },
-  bdland:   { en: 'BD Land',      bn: 'ভূমি মাপ' },
-  bdweight: { en: 'BD Weight',    bn: 'ওজন দাম' },
+  bdland:   { en: 'Land',         bn: 'ভূমির মাপ' },
+  bdweight: { en: 'Goods Weight', bn: 'পণ্যের ওজন' },
   support:  { en: 'Support',      bn: 'সাপোর্ট' },
 };
 
@@ -144,7 +151,7 @@ function AppInner() {
     <div style={{
       width: '100dvw', height: '100dvh',
       display: 'flex', flexDirection: 'column',
-      background: '#07080d', overflow: 'hidden',
+      background: 'var(--bg)', overflow: 'hidden',
     }}>
       {/* Content area */}
       <div style={{
@@ -169,7 +176,7 @@ function AppInner() {
               </div>
             ) : Screen ? (
               isGeneral ? (
-                <div style={{ flex: 1, minHeight: 0, background: '#1c1c1e', overflow: 'hidden' }}>
+                <div style={{ flex: 1, minHeight: 0, background: 'var(--bg)', overflow: 'hidden' }}>
                   <Screen history={history[activeId] || []} onAdd={add} onClear={clear} />
                 </div>
               ) : (
@@ -196,8 +203,10 @@ function AppInner() {
 
 export default function App() {
   return (
-    <LangProvider>
-      <AppInner />
-    </LangProvider>
+    <ThemeProvider>
+      <LangProvider>
+        <AppInner />
+      </LangProvider>
+    </ThemeProvider>
   );
 }

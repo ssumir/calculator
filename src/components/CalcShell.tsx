@@ -18,12 +18,12 @@ import {
 } from 'react-icons/fa';
 
 const D = {
-  bg:      '#0f0f14',
-  surface: '#1a1a1e',
-  border:  '#2e2e38',
-  textPri: '#f1f0f5',
-  textSec: '#6b6780',
-  textDim: '#3a3a48',
+  bg:      'var(--bg)',
+  surface: 'var(--surface)',
+  border:  'var(--border)',
+  textPri: 'var(--text)',
+  textSec: 'var(--text3)',
+  textDim: 'var(--text4)',
   font:    "'Noto Serif Bengali','Outfit','Noto Sans Bengali',sans-serif",
 };
 
@@ -58,7 +58,7 @@ export default function CalcShell({
     <div style={{
       display: 'flex', flexDirection: 'column',
       width: '100%', height: '100%',
-      background: D.bg, overflow: 'hidden',
+      background: 'var(--bg)', overflow: 'hidden',
       fontFamily: D.font, position: 'relative',
     }}>
 
@@ -78,7 +78,7 @@ export default function CalcShell({
         flexShrink: 0,
         padding: '10px 14px',
         paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 10px)',
-        background: '#0d0d11',
+        background: 'var(--surface)',
         borderTop: `1px solid ${D.border}`,
         display: 'flex', gap: 8,
       }}>
@@ -173,8 +173,8 @@ export default function CalcShell({
       {histOpen && (
         <div style={{
           position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 300,
-          background: D.surface,
-          border: `1.5px solid ${D.border}`,
+          background: 'var(--surface)',
+          border: `1.5px solid var(--border)`,
           borderRadius: '18px 18px 0 0',
           padding: '16px 16px 24px',
           maxHeight: '55%',
@@ -214,7 +214,7 @@ export default function CalcShell({
                 </button>
               )}
               <button onClick={() => setHistOpen(false)} style={{
-                background: D.bg, border: `1.5px solid ${D.border}`,
+                background: 'var(--bg)', border: `1.5px solid ${D.border}`,
                 borderRadius: 8, padding: '6px 10px',
                 color: D.textSec, cursor: 'pointer',
                 fontSize: 12, fontFamily: D.font, fontWeight: 700,
